@@ -45,7 +45,7 @@ button { color: inherit; }
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: 22px max(28px, calc((100vw - var(--max)) / 2 + 28px));
+  padding: 22px 28px;
   backdrop-filter: blur(16px);
   background: linear-gradient(to bottom, rgba(5,5,6,.9), rgba(5,5,6,.35));
 }
@@ -270,7 +270,7 @@ h3 { letter-spacing: -.025em; }
 
 footer {
   width:100%;
-  margin:0; padding:28px max(28px, calc((100vw - var(--max)) / 2 + 28px)) 40px; border-top:1px solid var(--line);
+  margin:0; padding:28px 28px 40px; border-top:1px solid var(--line);
   display:flex; justify-content:space-between; gap:20px; color:var(--muted);
   font:10px "Space Mono";
 }
@@ -286,6 +286,8 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
   position:fixed; z-index:4; margin:18px; right:max(18px, calc((100vw - 1120px)/2 + 18px));
   width:42px; height:42px; border-radius:50%; border:1px solid var(--line);
   background:rgba(0,0,0,.45); cursor:pointer; font-size:24px;
+  display:grid; place-items:center; padding:0; line-height:1; outline:none;
+  appearance:none; -webkit-appearance:none;
 }
 .dialog-visual { height:min(52vh, 590px); background:#050506; }
 .dialog-visual canvas { width:100%; height:100%; }
@@ -309,7 +311,7 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
 }
 @media (max-width: 620px) {
   .section { width:min(calc(100% - 30px),var(--max)); padding-top:78px; padding-bottom:78px; }
-  footer { width:100%; padding:14px 15px 24px; }
+  footer { width:100%; padding:18px 15px 22px; gap:5px; }
   .site-header { padding:18px 16px; }
   .brand { font-size:10px; }
   h1 { font-size:54px; }
@@ -324,4 +326,59 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
   .orbit { width:290px; }
   .orbit-c { width:340px; }
   .orb { width:190px; }
+}
+
+
+/* True front/back hero orbit: two halves of the same ellipse straddle the orb. */
+.orb-wrap .orbit { display: none; }
+.orb-wrap::before,
+.orb-wrap::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(78%, 440px);
+  aspect-ratio: 1.75 / 1;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 50%;
+  transform: translate(-50%,-50%) rotate(-18deg);
+  pointer-events: none;
+}
+.orb-wrap::before {
+  z-index: 1;
+  clip-path: inset(0 0 50% 0);
+}
+.orb-wrap::after {
+  z-index: 3;
+  clip-path: inset(50% 0 0 0);
+}
+.orb { z-index: 2; }
+
+/* Keyboard focus remains accessible without browser-blue control outlines. */
+.dialog-close:focus,
+.dialog-close:focus-visible,
+.machine-controls select:focus,
+.machine-controls select:focus-visible,
+.machine-controls input:focus,
+.machine-controls input:focus-visible,
+.machine-controls button:focus,
+.machine-controls button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(215,255,99,.45);
+}
+
+/* Keep native select arrows light on the dark machine controls. */
+.machine-controls select {
+  color-scheme: dark;
+  outline: none;
+}
+
+
+@media (max-width: 620px) {
+  .orb-wrap::before,
+  .orb-wrap::after {
+    width: min(92%, 340px);
+    aspect-ratio: 1.72 / 1;
+  }
+  footer span { line-height: 1.35; }
 }
