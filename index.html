@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050506" />
+  <meta name="description" content="The Complexity Archive — an interactive museum of the most complicated things the human mind can conceive." />
+  <title>The Complexity Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="The Complexity Archive home">
+      <span class="brand-mark">∞</span>
+      <span>THE COMPLEXITY ARCHIVE</span>
+    </a>
+    <nav class="nav">
+      <a href="#exhibits">Exhibits</a>
+      <a href="#machine">Machine</a>
+      <a href="#method">Method</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero section">
+      <div class="hero-copy">
+        <p class="eyebrow">AN EXPERIMENT IN THE LIMITS OF COMPREHENSION</p>
+        <h1>How complicated can a thing become?</h1>
+        <p class="lede">
+          A living archive of objects, systems, colors, sounds, patterns and ideas
+          that push complexity toward the edge of what humans can understand.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#exhibits">Enter the archive</a>
+          <button class="button ghost" id="random-exhibit">Random exhibit</button>
+        </div>
+      </div>
+
+      <div class="hero-object card">
+        <div class="orb-wrap">
+          <div class="orb" id="hero-orb"></div>
+          <div class="orbit orbit-a"></div>
+          <div class="orbit orbit-b"></div>
+          <div class="orbit orbit-c"></div>
+        </div>
+        <div class="object-meta">
+          <span>LIVE GENERATIVE OBJECT</span>
+          <span id="hero-complexity">94.7 / 100</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="manifesto section">
+      <div class="manifesto-number">00</div>
+      <div>
+        <p class="eyebrow">THE PREMISE</p>
+        <h2>There may be no single “most complicated” thing.</h2>
+        <p>
+          Complexity depends on what you measure: information, geometry,
+          computation, perception, structure, description length, or the amount
+          of effort required to understand a system. This archive treats
+          “most complicated” as a challenge rather than a settled fact.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="exhibits">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SELECTED EXHIBITS</p>
+          <h2>Six ways to reach the edge.</h2>
+        </div>
+        <p class="section-note">Click any exhibit to open the interactive view.</p>
+      </div>
+
+      <div class="exhibit-grid" id="exhibit-grid"></div>
+    </section>
+
+    <section class="section machine-section" id="machine">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">THE COMPLEXITY MACHINE</p>
+          <h2>Combine concepts. Generate a new impossible object.</h2>
+        </div>
+      </div>
+
+      <div class="machine-layout">
+        <div class="machine-controls card">
+          <label>
+            Primary domain
+            <select id="domain-a">
+              <option>Geometry</option>
+              <option>Color</option>
+              <option>Language</option>
+              <option>Music</option>
+              <option>Computation</option>
+              <option>Biology</option>
+              <option>Architecture</option>
+            </select>
+          </label>
+
+          <label>
+            Secondary domain
+            <select id="domain-b">
+              <option>Language</option>
+              <option>Geometry</option>
+              <option>Color</option>
+              <option>Music</option>
+              <option>Computation</option>
+              <option>Biology</option>
+              <option>Architecture</option>
+            </select>
+          </label>
+
+          <label>
+            Complexity pressure
+            <input id="pressure" type="range" min="1" max="100" value="86" />
+            <span class="range-value"><span id="pressure-value">86</span>%</span>
+          </label>
+
+          <button class="button primary full" id="generate-object">Generate object</button>
+        </div>
+
+        <div class="machine-output card">
+          <canvas id="machine-canvas" width="900" height="560"></canvas>
+          <div class="machine-copy">
+            <p class="eyebrow" id="generated-kicker">SYNTHETIC EXHIBIT 001</p>
+            <h3 id="generated-title">Recursive Semantic Polytope</h3>
+            <p id="generated-description">
+              A projected geometric object whose faces encode nested symbolic
+              grammars. Each rotation alters the interpreted meaning of adjacent
+              faces, causing the description of the object to change as the object changes.
+            </p>
+            <div class="score-row">
+              <span>Complexity score</span>
+              <strong id="generated-score">92.1</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section method" id="method">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">HOW WE SCORE COMPLEXITY</p>
+          <h2>A score is a map, not the territory.</h2>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <article class="metric card"><span>01</span><h3>Information</h3><p>How much irreducible description is needed to specify the object?</p></article>
+        <article class="metric card"><span>02</span><h3>Structure</h3><p>How many interacting layers, scales, constraints and relationships exist?</p></article>
+        <article class="metric card"><span>03</span><h3>Computation</h3><p>How difficult is it to simulate, solve, predict, optimize or enumerate?</p></article>
+        <article class="metric card"><span>04</span><h3>Perception</h3><p>How difficult is it for a human observer to fully distinguish or mentally model?</p></article>
+      </div>
+    </section>
+
+    <section class="section closing">
+      <p class="eyebrow">THE ARCHIVE REMAINS INCOMPLETE</p>
+      <h2>The most complicated thing may be the attempt to define complexity itself.</h2>
+      <a class="button primary" href="#top">Return to the beginning</a>
+    </section>
+  </main>
+
+  <dialog id="exhibit-dialog">
+    <button class="dialog-close" id="dialog-close" aria-label="Close">×</button>
+    <div class="dialog-visual">
+      <canvas id="dialog-canvas" width="1000" height="620"></canvas>
+    </div>
+    <div class="dialog-copy">
+      <p class="eyebrow" id="dialog-index">EXHIBIT 001</p>
+      <h2 id="dialog-title"></h2>
+      <p id="dialog-subtitle" class="dialog-subtitle"></p>
+      <p id="dialog-body"></p>
+      <div class="dialog-stats" id="dialog-stats"></div>
+    </div>
+  </dialog>
+
+  <footer>
+    <span>THE COMPLEXITY ARCHIVE</span>
+    <span>Built as an interactive thought experiment.</span>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
