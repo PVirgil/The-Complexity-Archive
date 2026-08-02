@@ -42,9 +42,10 @@ button { color: inherit; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: var(--max);
-  margin: auto;
-  padding: 22px 28px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 22px max(28px, calc((100vw - var(--max)) / 2 + 28px));
   backdrop-filter: blur(16px);
   background: linear-gradient(to bottom, rgba(5,5,6,.9), rgba(5,5,6,.35));
 }
@@ -146,6 +147,8 @@ h3 { letter-spacing: -.025em; }
   perspective: 700px;
 }
 .orb {
+  position: relative;
+  z-index: 2;
   width: 245px;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -159,6 +162,7 @@ h3 { letter-spacing: -.025em; }
 }
 .orbit {
   position: absolute;
+  z-index: 1;
   width: 370px;
   aspect-ratio: 1;
   border: 1px solid rgba(255,255,255,.19);
@@ -172,9 +176,9 @@ h3 { letter-spacing: -.025em; }
   left: 48%; top: -4px;
   box-shadow: 0 0 18px var(--accent);
 }
-.orbit-a { transform: rotateX(72deg) rotateZ(14deg); animation: spinA 11s linear infinite; }
-.orbit-b { transform: rotateY(67deg) rotateZ(35deg); animation: spinB 16s linear infinite; }
-.orbit-c { width: 440px; transform: rotateX(58deg) rotateY(35deg); animation: spinA 23s linear reverse infinite; opacity:.5; }
+.orbit-a { z-index: 1; transform: rotateX(72deg) rotateZ(14deg); animation: spinA 11s linear infinite; }
+.orbit-b { z-index: 3; transform: rotateY(67deg) rotateZ(35deg); animation: spinB 16s linear infinite; }
+.orbit-c { z-index: 1; width: 440px; transform: rotateX(58deg) rotateY(35deg); animation: spinA 23s linear reverse infinite; opacity:.5; }
 .object-meta {
   display:flex; justify-content:space-between; gap:20px;
   padding-top:18px; border-top:1px solid var(--line);
@@ -213,8 +217,12 @@ h3 { letter-spacing: -.025em; }
   cursor:pointer;
   transition: transform .25s, border-color .25s;
 }
-.exhibit:nth-child(1), .exhibit:nth-child(5) { grid-column: span 7; }
-.exhibit:nth-child(2), .exhibit:nth-child(6) { grid-column: span 5; }
+.exhibit:nth-child(1) { grid-column: span 7; order: 1; }
+.exhibit:nth-child(2) { grid-column: span 5; order: 2; }
+.exhibit:nth-child(3) { grid-column: span 4; order: 3; }
+.exhibit:nth-child(4) { grid-column: span 4; order: 4; }
+.exhibit:nth-child(6) { grid-column: span 4; order: 5; }
+.exhibit:nth-child(5) { grid-column: span 12; order: 6; }
 .exhibit:hover { transform: translateY(-5px); border-color: rgba(255,255,255,.28); }
 .exhibit-visual {
   height:245px; border-radius:16px; overflow:hidden;
@@ -261,8 +269,8 @@ h3 { letter-spacing: -.025em; }
 .closing h2 { max-width:950px; margin:0 auto 42px; }
 
 footer {
-  width:min(calc(100% - 56px),var(--max));
-  margin:auto; padding:28px 0 40px; border-top:1px solid var(--line);
+  width:100%;
+  margin:0; padding:28px max(28px, calc((100vw - var(--max)) / 2 + 28px)) 40px; border-top:1px solid var(--line);
   display:flex; justify-content:space-between; gap:20px; color:var(--muted);
   font:10px "Space Mono";
 }
@@ -300,7 +308,8 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
   .metric-grid { grid-template-columns:1fr 1fr; }
 }
 @media (max-width: 620px) {
-  .section, footer { width:min(calc(100% - 30px),var(--max)); padding-top:78px; padding-bottom:78px; }
+  .section { width:min(calc(100% - 30px),var(--max)); padding-top:78px; padding-bottom:78px; }
+  footer { width:100%; padding:14px 15px 24px; }
   .site-header { padding:18px 16px; }
   .brand { font-size:10px; }
   h1 { font-size:54px; }
