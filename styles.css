@@ -382,3 +382,113 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
   }
   footer span { line-height: 1.35; }
 }
+
+
+/* v4 — restore three orbital planes. Each orbit is split into a back half
+   (below the orb) and a front half (above the orb). */
+.orb-wrap::before,
+.orb-wrap::after {
+  width: min(78%, 440px);
+  aspect-ratio: 1.75 / 1;
+  transform: translate(-50%,-50%) rotate(-18deg);
+}
+.orb-wrap .orbit {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+  animation: none;
+  opacity: 1;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 50%;
+}
+.orb-wrap .orbit::after { display: none; }
+
+/* Orbit 2: rear half */
+.orb-wrap .orbit-a {
+  z-index: 1;
+  width: min(70%, 390px);
+  aspect-ratio: 1.55 / 1;
+  transform: translate(-50%,-50%) rotate(52deg);
+  clip-path: inset(0 0 50% 0);
+}
+/* Orbit 2: front half */
+.orb-wrap .orbit-a::before {
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:50%;
+  clip-path: inset(50% 0 0 0);
+  transform:none;
+}
+/* Put the front half in a separate overlay using a box-shadow-free duplicate. */
+.orb-wrap .orbit-b {
+  z-index: 3;
+  width: min(70%, 390px);
+  aspect-ratio: 1.55 / 1;
+  transform: translate(-50%,-50%) rotate(52deg);
+  clip-path: inset(50% 0 0 0);
+}
+
+/* Orbit 3: use orbit-c for rear half and an extra pseudo ring on hero-object. */
+.orb-wrap .orbit-c {
+  z-index: 1;
+  width: min(88%, 490px);
+  aspect-ratio: 2.15 / 1;
+  transform: translate(-50%,-50%) rotate(18deg);
+  clip-path: inset(0 0 50% 0);
+  opacity:.65;
+}
+.orb-wrap .orbit-c::before {
+  display:none;
+}
+.hero-object { position: relative; }
+.hero-object::after {
+  content:"";
+  position:absolute;
+  z-index:3;
+  left:50%;
+  top:calc(50% - 24px);
+  width:min(76%, 490px);
+  aspect-ratio:2.15 / 1;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;
+  transform:translate(-50%,-50%) rotate(18deg);
+  clip-path:inset(50% 0 0 0);
+  pointer-events:none;
+}
+
+/* Raise the close glyph slightly while keeping the button itself centered. */
+.dialog-close {
+  padding-bottom: 4px;
+}
+
+/* Tablet: prevent machine domain selects from being vertically crushed. */
+@media (min-width: 621px) and (max-width: 1024px) {
+  .machine-controls select {
+    min-height: 50px;
+    height: 50px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .orb-wrap::before,
+  .orb-wrap::after {
+    width:min(92%,340px);
+  }
+  .orb-wrap .orbit-a,
+  .orb-wrap .orbit-b {
+    width:min(82%,310px);
+  }
+  .orb-wrap .orbit-c {
+    width:min(96%,360px);
+  }
+  .hero-object::after {
+    width:min(78%,360px);
+    top:calc(50% - 18px);
+  }
+}
