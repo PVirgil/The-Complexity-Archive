@@ -19,7 +19,7 @@ const exhibits = [
   },
   {
     title: "The Pattern",
-    subtitle: "Order that continually approaches noise without becoming random.",
+    subtitle: "Order that approaches noise without randomness.",
     category: "INFORMATION",
     score: 95.8,
     body: "Pure repetition is simple. Pure randomness is difficult to compress but contains little reusable structure. Interesting complexity often lives between them. This pattern mixes deterministic waves, recursion, interference and perturbation to occupy that narrow region.",
