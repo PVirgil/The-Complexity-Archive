@@ -424,12 +424,12 @@ function drawHeroOrb(ms){
     const phase=i*2.399;
     const speed=.075+(i%5)*.014;
     const a=t*speed+phase;
-    const band=1.24+(i%6)*.105;
-    const wobble=1+Math.sin(t*.21+i*1.73)*.07;
+    const band=1.18+(i%6)*.085;
+    const wobble=1+Math.sin(t*.21+i*1.73)*.045;
     const rr=r*band*wobble;
     const squash=.54+(i%4)*.075;
-    const driftX=Math.sin(t*.11+i)*r*.065;
-    const driftY=Math.cos(t*.09+i*1.4)*r*.05;
+    const driftX=Math.sin(t*.11+i)*r*.04;
+    const driftY=Math.cos(t*.09+i*1.4)*r*.035;
     const px=cx+Math.cos(a)*rr+driftX;
     const py=cy+Math.sin(a)*rr*squash+driftY;
     const depth=(Math.sin(a)+1)*.5;
@@ -455,8 +455,7 @@ function drawHeroOrb(ms){
   orb.style.transform=`rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(${1+Math.sin(t*.72)*.018})`;
 
   if(ms-orbLastScoreUpdate>900){
-    const score=94.7+Math.sin(t*.41)*1.7+Math.sin(t*.13)*.8;
-    heroComplexity.textContent=`${score.toFixed(1)} / 100`;
+    heroComplexity.textContent="94.7 / 100";
     orbLastScoreUpdate=ms;
   }
   requestAnimationFrame(drawHeroOrb);
