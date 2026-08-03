@@ -13,2125 +13,278 @@ const exhibits = [
     subtitle: "A color that never occupies just one place in color space.",
     category: "PERCEPTION",
     score: 91.4,
-    body: "Human color perception is already a compression system. This exhibit continuously moves through hue, saturation, luminance and local contrast so that the experienced color depends on its neighbors and on time.",
-    stats: { Information: 82, Structure: 87, Computation: 91, Perception: 100 },
+    body: "Human color perception is already a compression system. This exhibit continuously moves through hue, saturation, luminance and local contrast so that the experienced color depends on its neighbors and on time. The 'complexity' is perceptual: the object cannot be summarized by a single hexadecimal value.",
+    stats: { Information: 84, Structure: 88, Computation: 82, Perception: 99 },
     type: "color"
   },
   {
     title: "The Pattern",
-    subtitle: "Order repeatedly approaching chaos without becoming noise.",
-    category: "SYSTEMS",
-    score: 95.7,
-    body: "A procedural field generates nested structures at multiple scales. Small changes propagate outward, creating a pattern that remains coherent while resisting simple compression.",
-    stats: { Information: 95, Structure: 97, Computation: 96, Perception: 94 },
+    subtitle: "Order that continually approaches noise without becoming random.",
+    category: "INFORMATION",
+    score: 95.8,
+    body: "Pure repetition is simple. Pure randomness is difficult to compress but contains little reusable structure. Interesting complexity often lives between them. This pattern mixes deterministic waves, recursion, interference and perturbation to occupy that narrow region.",
+    stats: { Information: 98, Structure: 97, Computation: 91, Perception: 97 },
     type: "pattern"
   },
   {
     title: "The Number",
-    subtitle: "Magnitude pushed beyond ordinary human intuition.",
+    subtitle: "A glimpse of numerical objects too large to write down.",
     category: "MATHEMATICS",
-    score: 99.1,
-    body: "Some numbers are not difficult because of their digits, but because the processes required to describe them grow beyond practical representation. This exhibit treats number as structure rather than notation.",
-    stats: { Information: 100, Structure: 98, Computation: 100, Perception: 91 },
+    score: 96.6,
+    body: "Some important numbers are not difficult because their digits look unusual, but because their definitions encode gigantic combinatorial spaces. This exhibit represents the idea of a number whose concise definition points toward a quantity that could never be expanded physically within the observable universe.",
+    stats: { Information: 89, Structure: 96, Computation: 100, Perception: 97 },
     type: "number"
   },
   {
     title: "The Machine",
-    subtitle: "A system whose output becomes the input to its next state.",
+    subtitle: "A network whose global behavior cannot be inferred from any one part.",
     category: "COMPUTATION",
     score: 97.3,
-    body: "Recursive systems can create enormous apparent complexity from compact rules. The machine exhibit visualizes a network whose state continually modifies its own future behavior.",
-    stats: { Information: 94, Structure: 98, Computation: 100, Perception: 97 },
-    type: "machine"
+    body: "Complex machines become difficult to understand when feedback loops, distributed state and emergent behavior dominate their operation. This synthetic network models a system in which local rules remain simple while global motion becomes difficult to predict.",
+    stats: { Information: 97, Structure: 100, Computation: 99, Perception: 93 },
+    type: "network"
   },
   {
     title: "The Language",
-    subtitle: "Meaning nested inside meaning nested inside meaning.",
+    subtitle: "A sentence that describes rules for describing itself.",
     category: "LANGUAGE",
-    score: 93.8,
-    body: "Language can encode recursion, ambiguity, context and references to itself. This exhibit treats language as a living graph of relationships rather than a simple sequence of words.",
-    stats: { Information: 97, Structure: 96, Computation: 88, Perception: 94 },
+    score: 90.7,
+    body: "Natural language can create nested references, ambiguity, recursion, context sensitivity and self-description. This exhibit treats language as a dynamic graph, where each concept inherits meaning from the concepts surrounding it.",
+    stats: { Information: 91, Structure: 95, Computation: 83, Perception: 94 },
     type: "language"
   }
 ];
 
-const $ = (selector, scope = document) => scope.querySelector(selector);
-const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
+const grid = document.querySelector("#exhibit-grid");
 
-
-/* =========================================================
-   CANVAS HELPERS
-   ========================================================= */
+exhibits.forEach((item, index) => {
+  const article = document.createElement("article");
+  article.className = "exhibit card";
+  article.innerHTML = `
+    <div class="exhibit-visual"><canvas width="800" height="450"></canvas></div>
+    <div class="exhibit-topline"><span>${String(index + 1).padStart(3,"0")} / ${item.category}</span><span>${item.score.toFixed(1)}</span></div>
+    <h3>${item.title}</h3>
+    <p>${item.subtitle}</p>
+  `;
+  article.addEventListener("click", () => openExhibit(index));
+  grid.appendChild(article);
+  animateCanvas(article.querySelector("canvas"), item.type, index * 73);
+});
 
 function fitCanvas(canvas) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const rect = canvas.getBoundingClientRect();
-
-  const width = Math.max(1, Math.floor(rect.width * dpr));
-  const height = Math.max(1, Math.floor(rect.height * dpr));
-
-  if (canvas.width !== width || canvas.height !== height) {
-    canvas.width = width;
-    canvas.height = height;
+  const w = Math.max(1, Math.floor(rect.width * dpr));
+  const h = Math.max(1, Math.floor(rect.height * dpr));
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w;
+    canvas.height = h;
   }
+  return { w, h, dpr };
+}
 
-  return {
-    ctx: canvas.getContext("2d"),
-    width,
-    height,
-    dpr
+function animateCanvas(canvas, type, seed = 1) {
+  const ctx = canvas.getContext("2d");
+  let raf;
+  const draw = (time) => {
+    const { w, h } = fitCanvas(canvas);
+    const t = time * 0.0005 + seed;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = "#08080b";
+    ctx.fillRect(0,0,w,h);
+
+    if (type === "fractal") drawFractal(ctx,w,h,t);
+    if (type === "color") drawColor(ctx,w,h,t);
+    if (type === "pattern") drawPattern(ctx,w,h,t);
+    if (type === "number") drawNumber(ctx,w,h,t);
+    if (type === "network") drawNetwork(ctx,w,h,t);
+    if (type === "language") drawLanguage(ctx,w,h,t);
+    raf = requestAnimationFrame(draw);
   };
+  raf = requestAnimationFrame(draw);
+  return () => cancelAnimationFrame(raf);
 }
 
-function clearCanvas(canvas) {
-  const { ctx, width, height } = fitCanvas(canvas);
-  ctx.clearRect(0, 0, width, height);
-  return { ctx, width, height };
-}
-
-
-/* =========================================================
-   HERO ORBITS
-   ========================================================= */
-
-/*
-The hero uses TWO canvases:
-
-orbit-canvas
-    z-index: 1
-    draws orbit sections and dots that are BEHIND the orb.
-
-orbit-front-canvas
-    z-index: 3
-    draws orbit sections and dots that are IN FRONT of the orb.
-
-The DOM orb itself is z-index: 2.
-
-This guarantees:
-
-rear orbit
-↓
-ORB
-↓
-front orbit
-
-instead of trying to fake depth using CSS clip-path.
-*/
-
-const orbitCanvas = $("#orbit-canvas");
-
-let frontOrbitCanvas = null;
-let orbitCtx = null;
-let frontOrbitCtx = null;
-
-
-/*
-Rotate a 3D point around X, Y and Z.
-*/
-
-function rotate3D(x, y, z, rx, ry, rz) {
-  const cosX = Math.cos(rx);
-  const sinX = Math.sin(rx);
-
-  const cosY = Math.cos(ry);
-  const sinY = Math.sin(ry);
-
-  const cosZ = Math.cos(rz);
-  const sinZ = Math.sin(rz);
-
-  /* X rotation */
-
-  const y1 = y * cosX - z * sinX;
-  const z1 = y * sinX + z * cosX;
-  const x1 = x;
-
-  /* Y rotation */
-
-  const x2 = x1 * cosY + z1 * sinY;
-  const z2 = -x1 * sinY + z1 * cosY;
-  const y2 = y1;
-
-  /* Z rotation */
-
-  const x3 = x2 * cosZ - y2 * sinZ;
-  const y3 = x2 * sinZ + y2 * cosZ;
-
-  return {
-    x: x3,
-    y: y3,
-    z: z2
-  };
-}
-
-
-/*
-Generate points around one actual ellipse.
-
-Every point has:
-
-x = screen position
-y = screen position
-z = depth
-
-z < 0 = behind orb
-z >= 0 = in front of orb
-*/
-
-function generateOrbit({
-  cx,
-  cy,
-  radiusX,
-  radiusY,
-  rotateX,
-  rotateY,
-  rotateZ,
-  phase,
-  segments = 320
-}) {
-  const points = [];
-
-  for (let i = 0; i <= segments; i++) {
-    const angle =
-      (i / segments) * Math.PI * 2 +
-      phase;
-
-    const localX =
-      Math.cos(angle) * radiusX;
-
-    const localY =
-      Math.sin(angle) * radiusY;
-
-    const point = rotate3D(
-      localX,
-      localY,
-      0,
-      rotateX,
-      rotateY,
-      rotateZ
-    );
-
-    points.push({
-      x: cx + point.x,
-      y: cy + point.y,
-      z: point.z
-    });
-  }
-
-  return points;
-}
-
-
-/*
-Draw only one depth side of an orbit.
-
-front = false:
-draw only points behind the sphere.
-
-front = true:
-draw only points in front of the sphere.
-*/
-
-function drawDepthHalf(
-  ctx,
-  points,
-  front,
-  color,
-  lineWidth
-) {
-  ctx.beginPath();
-
-  let active = false;
-
-  for (let i = 0; i < points.length; i++) {
-    const point = points[i];
-
-    const pointIsFront =
-      point.z >= 0;
-
-    if (pointIsFront !== front) {
-      active = false;
-      continue;
-    }
-
-    if (!active) {
-      ctx.moveTo(
-        point.x,
-        point.y
-      );
-
-      active = true;
-    } else {
-      ctx.lineTo(
-        point.x,
-        point.y
-      );
-    }
-  }
-
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lineWidth;
-  ctx.lineCap = "round";
-
-  ctx.stroke();
-}
-
-
-/*
-Return the exact location of a moving dot
-on the same ellipse used to draw the orbit.
-*/
-
-function orbitPoint(
-  cx,
-  cy,
-  radiusX,
-  radiusY,
-  rotateX,
-  rotateY,
-  rotateZ,
-  angle
-) {
-  const localX =
-    Math.cos(angle) * radiusX;
-
-  const localY =
-    Math.sin(angle) * radiusY;
-
-  const point = rotate3D(
-    localX,
-    localY,
-    0,
-    rotateX,
-    rotateY,
-    rotateZ
-  );
-
-  return {
-    x: cx + point.x,
-    y: cy + point.y,
-    z: point.z
-  };
-}
-
-
-/*
-Green satellite.
-*/
-
-function drawOrbitDot(
-  ctx,
-  point,
-  dpr
-) {
+function drawFractal(ctx,w,h,t){
   ctx.save();
-
-  ctx.fillStyle = "#d7ff63";
-
-  ctx.shadowColor =
-    "rgba(215,255,99,.95)";
-
-  ctx.shadowBlur =
-    12 * dpr;
-
-  ctx.beginPath();
-
-  ctx.arc(
-    point.x,
-    point.y,
-    4 * dpr,
-    0,
-    Math.PI * 2
-  );
-
-  ctx.fill();
-
+  ctx.translate(w/2,h/2);
+  const layers = 44;
+  for(let i=0;i<layers;i++){
+    const p=i/layers, r=p*Math.min(w,h)*.46;
+    const sides=5+(i%4);
+    ctx.beginPath();
+    for(let j=0;j<=sides;j++){
+      const a=j/sides*Math.PI*2 + t*(.18+p*.22) + Math.sin(i*.7+t)*.08;
+      const rr=r*(.76+.24*Math.sin(j*2.31+i*.42+t));
+      const x=Math.cos(a)*rr, y=Math.sin(a)*rr;
+      j===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle=`hsla(${190+i*4+t*30},85%,${55+p*22}%,${.12+p*.36})`;
+    ctx.lineWidth=1+(1-p)*1.2;
+    ctx.stroke();
+  }
   ctx.restore();
 }
-
-
-/*
-Create the canvas that sits ABOVE the orb.
-*/
-
-function createFrontOrbitCanvas() {
-  if (!orbitCanvas) return;
-
-  if ($("#orbit-front-canvas")) {
-    frontOrbitCanvas =
-      $("#orbit-front-canvas");
-
-    frontOrbitCtx =
-      frontOrbitCanvas.getContext("2d");
-
-    return;
+function drawColor(ctx,w,h,t){
+  const g=ctx.createLinearGradient(0,0,w,h);
+  for(let i=0;i<=12;i++){
+    const h1=(i*37+t*90+Math.sin(i+t)*80)%360;
+    g.addColorStop(i/12,`hsl(${h1} 92% ${42+20*Math.sin(i*.9+t)}%)`);
   }
-
-  frontOrbitCanvas =
-    document.createElement("canvas");
-
-  frontOrbitCanvas.id =
-    "orbit-front-canvas";
-
-  frontOrbitCanvas.setAttribute(
-    "aria-hidden",
-    "true"
-  );
-
-  Object.assign(
-    frontOrbitCanvas.style,
-    {
-      position: "absolute",
-      inset: "0",
-      width: "100%",
-      height: "100%",
-      zIndex: "3",
-      pointerEvents: "none"
-    }
-  );
-
-  orbitCanvas.parentElement.appendChild(
-    frontOrbitCanvas
-  );
-
-  frontOrbitCtx =
-    frontOrbitCanvas.getContext("2d");
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  ctx.globalCompositeOperation="screen";
+  for(let i=0;i<12;i++){
+    const x=w*(.5+.42*Math.sin(t*(.7+i*.02)+i));
+    const y=h*(.5+.42*Math.cos(t*(.9+i*.03)+i*1.7));
+    const rg=ctx.createRadialGradient(x,y,0,x,y,Math.min(w,h)*.35);
+    rg.addColorStop(0,`hsla(${(t*120+i*41)%360},100%,65%,.28)`);
+    rg.addColorStop(1,"transparent");
+    ctx.fillStyle=rg; ctx.fillRect(0,0,w,h);
+  }
+  ctx.globalCompositeOperation="source-over";
 }
-
-
-/*
-Resize both orbit canvases.
-*/
-
-function sizeOrbitCanvases() {
-  if (!orbitCanvas) return null;
-
-  const rect =
-    orbitCanvas.getBoundingClientRect();
-
-  const dpr =
-    Math.min(
-      window.devicePixelRatio || 1,
-      2
-    );
-
-  const width =
-    Math.max(
-      1,
-      Math.round(rect.width * dpr)
-    );
-
-  const height =
-    Math.max(
-      1,
-      Math.round(rect.height * dpr)
-    );
-
-  if (
-    orbitCanvas.width !== width ||
-    orbitCanvas.height !== height
-  ) {
-    orbitCanvas.width = width;
-    orbitCanvas.height = height;
-  }
-
-  if (frontOrbitCanvas) {
-    if (
-      frontOrbitCanvas.width !== width ||
-      frontOrbitCanvas.height !== height
-    ) {
-      frontOrbitCanvas.width = width;
-      frontOrbitCanvas.height = height;
+function drawPattern(ctx,w,h,t){
+  const step=Math.max(8, Math.min(w,h)/31);
+  for(let y=0;y<h;y+=step){
+    for(let x=0;x<w;x+=step){
+      const v=Math.sin(x*.021+t*3)+Math.cos(y*.026-t*2)+Math.sin((x+y)*.013+t);
+      const hue=220+v*38;
+      const size=step*(.12+.22*(v+3)/6);
+      ctx.fillStyle=`hsla(${hue},85%,68%,${.25+.45*(v+3)/6})`;
+      ctx.beginPath(); ctx.arc(x+step/2,y+step/2,size,0,Math.PI*2); ctx.fill();
     }
   }
-
-  return {
-    width,
-    height,
-    dpr
-  };
 }
-
-
-/*
-Main orbit renderer.
-*/
-
-function renderHeroOrbits(time = 0) {
-  if (
-    !orbitCanvas ||
-    !frontOrbitCanvas
-  ) {
-    return;
+function drawNumber(ctx,w,h,t){
+  ctx.font=`${Math.max(10,w/55)}px "Space Mono", monospace`;
+  ctx.textBaseline="top";
+  const cols=Math.ceil(w/(w/22));
+  for(let c=0;c<cols;c++){
+    const x=(c/(cols-1))*w;
+    const len=9+((c*7)%19);
+    const text=Array.from({length:len},(_,i)=>Math.floor(Math.abs(Math.sin(c*11+i*19+t))*10)).join("");
+    ctx.save();
+    ctx.translate(x,(h/2)+Math.sin(c*.6+t)*h*.3);
+    ctx.rotate(Math.sin(c*.22+t)*.35);
+    ctx.fillStyle=`hsla(${90+c*8+t*20},90%,70%,${.2+(c%5)*.1})`;
+    ctx.fillText(text,0,0);
+    ctx.restore();
   }
-
-  const dimensions =
-    sizeOrbitCanvases();
-
-  if (!dimensions) return;
-
-  const {
-    width,
-    height,
-    dpr
-  } = dimensions;
-
-  orbitCtx =
-    orbitCanvas.getContext("2d");
-
-  frontOrbitCtx =
-    frontOrbitCanvas.getContext("2d");
-
-  orbitCtx.clearRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  frontOrbitCtx.clearRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  const cx =
-    width / 2;
-
-  const cy =
-    height / 2;
-
-  /*
-  Scale orbit dimensions according to the
-  actual hero area.
-
-  Desktop retains the large original feel.
-  Mobile scales naturally.
-  */
-
-  const stage =
-    Math.min(width, height);
-
-  const orbitScale =
-    stage / 480;
-
-  /*
-  Three independently tilted orbital planes.
-
-  radiusX / radiusY define the actual ellipse.
-
-  rotateX/Y/Z determine how each ellipse sits
-  in three-dimensional space.
-  */
-
-  const orbits = [
-    {
-      radiusX:
-        205 * orbitScale,
-
-      radiusY:
-        205 * orbitScale,
-
-      rotateX:
-        72 * Math.PI / 180,
-
-      rotateY:
-        0,
-
-      rotateZ:
-        14 * Math.PI / 180,
-
-      phase:
-        0,
-
-      dotOffset:
-        0,
-
-      dotSpeed:
-        0.00048,
-
-      alpha:
-        .34
-    },
-
-    {
-      radiusX:
-        205 * orbitScale,
-
-      radiusY:
-        205 * orbitScale,
-
-      rotateX:
-        0,
-
-      rotateY:
-        67 * Math.PI / 180,
-
-      rotateZ:
-        35 * Math.PI / 180,
-
-      phase:
-        1.2,
-
-      dotOffset:
-        2.1,
-
-      dotSpeed:
-        -0.00040,
-
-      alpha:
-        .28
-    },
-
-    {
-      radiusX:
-        240 * orbitScale,
-
-      radiusY:
-        240 * orbitScale,
-
-      rotateX:
-        58 * Math.PI / 180,
-
-      rotateY:
-        35 * Math.PI / 180,
-
-      rotateZ:
-        0,
-
-      phase:
-        2.4,
-
-      dotOffset:
-        4.2,
-
-      dotSpeed:
-        0.00031,
-
-      alpha:
-        .20
-    }
-  ];
-
-
-  /*
-  ---------------------------------------------------------
-  DRAW REAR HALVES
-  ---------------------------------------------------------
-
-  These are on orbitCanvas at z-index 1.
-
-  The DOM orb at z-index 2 naturally covers them.
-  */
-
-  orbits.forEach((orbit) => {
-    const points =
-      generateOrbit({
-        cx,
-        cy,
-
-        radiusX:
-          orbit.radiusX,
-
-        radiusY:
-          orbit.radiusY,
-
-        rotateX:
-          orbit.rotateX,
-
-        rotateY:
-          orbit.rotateY,
-
-        rotateZ:
-          orbit.rotateZ,
-
-        /*
-        Slowly rotate the entire path without
-        ever resetting visibly.
-        */
-
-        phase:
-          orbit.phase +
-          time * 0.00008
-      });
-
-    drawDepthHalf(
-      orbitCtx,
-      points,
-      false,
-      `rgba(255,255,255,${orbit.alpha})`,
-      1.15 * dpr
-    );
-  });
-
-
-  /*
-  ---------------------------------------------------------
-  DRAW FRONT HALVES
-  ---------------------------------------------------------
-
-  These are on orbit-front-canvas at z-index 3,
-  which is ABOVE the orb.
-  */
-
-  orbits.forEach((orbit) => {
-    const points =
-      generateOrbit({
-        cx,
-        cy,
-
-        radiusX:
-          orbit.radiusX,
-
-        radiusY:
-          orbit.radiusY,
-
-        rotateX:
-          orbit.rotateX,
-
-        rotateY:
-          orbit.rotateY,
-
-        rotateZ:
-          orbit.rotateZ,
-
-        phase:
-          orbit.phase +
-          time * 0.00008
-      });
-
-    drawDepthHalf(
-      frontOrbitCtx,
-      points,
-      true,
-      `rgba(255,255,255,${orbit.alpha + .16})`,
-      1.2 * dpr
-    );
-  });
-
-
-  /*
-  ---------------------------------------------------------
-  GREEN DOTS
-  ---------------------------------------------------------
-
-  These do NOT orbit around the sphere.
-
-  Their X/Y position is calculated directly
-  from the exact ellipse equation.
-
-  Therefore every green dot physically follows
-  its corresponding white orbit line.
-  */
-
-  orbits.forEach((orbit) => {
-    const angle =
-      orbit.dotOffset +
-      time * orbit.dotSpeed;
-
-    const dot =
-      orbitPoint(
-        cx,
-        cy,
-
-        orbit.radiusX,
-        orbit.radiusY,
-
-        orbit.rotateX,
-        orbit.rotateY,
-        orbit.rotateZ,
-
-        angle
-      );
-
-    /*
-    If dot.z is positive, the dot is on the
-    front side of the orbital plane.
-
-    Draw it above the orb.
-
-    Otherwise draw it behind the orb.
-    */
-
-    if (dot.z >= 0) {
-      drawOrbitDot(
-        frontOrbitCtx,
-        dot,
-        dpr
-      );
-    } else {
-      drawOrbitDot(
-        orbitCtx,
-        dot,
-        dpr
-      );
-    }
-  });
-
-
-  requestAnimationFrame(
-    renderHeroOrbits
-  );
 }
-
-
-/*
-Start orbit renderer.
-*/
-
-if (orbitCanvas) {
-  createFrontOrbitCanvas();
-
-  requestAnimationFrame(
-    renderHeroOrbits
-  );
-}
-
-
-/* =========================================================
-   AMBIENT BACKGROUND
-   ========================================================= */
-
-const ambient =
-  $("#ambient-canvas");
-
-if (ambient) {
-  const ctx =
-    ambient.getContext("2d");
-
-  let particles = [];
-
-  function resizeAmbient() {
-    const dpr =
-      Math.min(
-        window.devicePixelRatio || 1,
-        2
-      );
-
-    ambient.width =
-      innerWidth * dpr;
-
-    ambient.height =
-      innerHeight * dpr;
-
-    particles =
-      Array.from(
-        { length: 55 },
-        () => ({
-          x:
-            Math.random() *
-            ambient.width,
-
-          y:
-            Math.random() *
-            ambient.height,
-
-          r:
-            Math.random() *
-            1.4 *
-            dpr +
-            .3,
-
-          vx:
-            (Math.random() - .5) *
-            .08 *
-            dpr,
-
-          vy:
-            (Math.random() - .5) *
-            .08 *
-            dpr
-        })
-      );
-  }
-
-  function animateAmbient() {
-    ctx.clearRect(
-      0,
-      0,
-      ambient.width,
-      ambient.height
-    );
-
-    ctx.fillStyle =
-      "rgba(255,255,255,.7)";
-
-    particles.forEach((p) => {
-      p.x += p.vx;
-      p.y += p.vy;
-
-      if (p.x < 0) {
-        p.x = ambient.width;
-      }
-
-      if (p.x > ambient.width) {
-        p.x = 0;
-      }
-
-      if (p.y < 0) {
-        p.y = ambient.height;
-      }
-
-      if (p.y > ambient.height) {
-        p.y = 0;
-      }
-
-      ctx.beginPath();
-
-      ctx.arc(
-        p.x,
-        p.y,
-        p.r,
-        0,
-        Math.PI * 2
-      );
-
-      ctx.fill();
+function drawNetwork(ctx,w,h,t){
+  const nodes=48;
+  const pts=[];
+  for(let i=0;i<nodes;i++){
+    pts.push({
+      x:w*(.5+.43*Math.sin(i*2.399+t*(.07+(i%5)*.01))),
+      y:h*(.5+.43*Math.cos(i*1.717-t*(.08+(i%7)*.01)))
     });
-
-    requestAnimationFrame(
-      animateAmbient
-    );
   }
-
-  resizeAmbient();
-
-  window.addEventListener(
-    "resize",
-    resizeAmbient
-  );
-
-  animateAmbient();
-}
-
-
-/* =========================================================
-   GENERATIVE EXHIBIT VISUALS
-   ========================================================= */
-
-function drawFractal(
-  canvas,
-  time = 0
-) {
-  const {
-    ctx,
-    width,
-    height
-  } = fitCanvas(canvas);
-
-  ctx.clearRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  ctx.fillStyle =
-    "#08080b";
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  const cx =
-    width / 2;
-
-  const cy =
-    height / 2;
-
-  const count = 180;
-
-  for (
-    let i = 0;
-    i < count;
-    i++
-  ) {
-    const t =
-      i / count;
-
-    const angle =
-      i * 2.399 +
-      time * .0002;
-
-    const radius =
-      Math.sqrt(t) *
-      Math.min(
-        width,
-        height
-      ) *
-      .44;
-
-    const x =
-      cx +
-      Math.cos(angle) *
-      radius;
-
-    const y =
-      cy +
-      Math.sin(angle) *
-      radius;
-
-    const hue =
-      160 +
-      t * 170 +
-      time * .015;
-
-    ctx.fillStyle =
-      `hsla(${hue},90%,65%,${.25 + t * .55})`;
-
-    ctx.beginPath();
-
-    ctx.arc(
-      x,
-      y,
-      1 + t * 3,
-      0,
-      Math.PI * 2
-    );
-
-    ctx.fill();
-  }
-}
-
-
-function drawColor(
-  canvas,
-  time = 0
-) {
-  const {
-    ctx,
-    width,
-    height
-  } = fitCanvas(canvas);
-
-  const gradient =
-    ctx.createLinearGradient(
-      0,
-      0,
-      width,
-      height
-    );
-
-  gradient.addColorStop(
-    0,
-    `hsl(${time * .02 % 360},90%,60%)`
-  );
-
-  gradient.addColorStop(
-    .35,
-    `hsl(${(time * .02 + 90) % 360},95%,62%)`
-  );
-
-  gradient.addColorStop(
-    .7,
-    `hsl(${(time * .02 + 200) % 360},85%,55%)`
-  );
-
-  gradient.addColorStop(
-    1,
-    `hsl(${(time * .02 + 310) % 360},90%,65%)`
-  );
-
-  ctx.fillStyle =
-    gradient;
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  const radial =
-    ctx.createRadialGradient(
-      width * .35,
-      height * .3,
-      0,
-      width * .35,
-      height * .3,
-      width * .7
-    );
-
-  radial.addColorStop(
-    0,
-    "rgba(255,255,255,.35)"
-  );
-
-  radial.addColorStop(
-    1,
-    "rgba(0,0,0,.45)"
-  );
-
-  ctx.fillStyle =
-    radial;
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-}
-
-
-function drawPattern(
-  canvas,
-  time = 0
-) {
-  const {
-    ctx,
-    width,
-    height
-  } = fitCanvas(canvas);
-
-  ctx.fillStyle =
-    "#08080b";
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  const spacing =
-    Math.max(
-      16,
-      width / 24
-    );
-
-  for (
-    let x = -spacing;
-    x < width + spacing;
-    x += spacing
-  ) {
-    for (
-      let y = -spacing;
-      y < height + spacing;
-      y += spacing
-    ) {
-      const wave =
-        Math.sin(
-          x * .015 +
-          y * .02 +
-          time * .001
-        );
-
-      const radius =
-        spacing *
-        (.12 + Math.abs(wave) * .3);
-
-      ctx.strokeStyle =
-        `rgba(215,255,99,${.08 + Math.abs(wave) * .3})`;
-
-      ctx.lineWidth = 1;
-
-      ctx.beginPath();
-
-      ctx.arc(
-        x +
-        Math.sin(
-          time * .0008 +
-          y * .01
-        ) *
-        spacing *
-        .35,
-
-        y +
-        Math.cos(
-          time * .0007 +
-          x * .01
-        ) *
-        spacing *
-        .35,
-
-        radius,
-        0,
-        Math.PI * 2
-      );
-
-      ctx.stroke();
-    }
-  }
-}
-
-
-function drawNumber(
-  canvas,
-  time = 0
-) {
-  const {
-    ctx,
-    width,
-    height,
-    dpr
-  } = fitCanvas(canvas);
-
-  ctx.fillStyle =
-    "#08080b";
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  ctx.font =
-    `${12 * dpr}px "Space Mono", monospace`;
-
-  ctx.textBaseline =
-    "top";
-
-  const chars =
-    "314159265358979323846264338327950288419716939937510";
-
-  const stepX =
-    13 * dpr;
-
-  const stepY =
-    17 * dpr;
-
-  for (
-    let y = 0;
-    y < height;
-    y += stepY
-  ) {
-    for (
-      let x = 0;
-      x < width;
-      x += stepX
-    ) {
-      const index =
-        Math.floor(
-          x / stepX +
-          y / stepY * 17 +
-          time * .002
-        ) %
-        chars.length;
-
-      const value =
-        Math.sin(
-          x * .01 +
-          y * .015 +
-          time * .001
-        );
-
-      ctx.fillStyle =
-        value > .45
-          ? "#d7ff63"
-          : `rgba(255,255,255,${.08 + Math.abs(value) * .3})`;
-
-      ctx.fillText(
-        chars[index],
-        x,
-        y
-      );
-    }
-  }
-}
-
-
-function drawMachine(
-  canvas,
-  time = 0
-) {
-  const {
-    ctx,
-    width,
-    height
-  } = fitCanvas(canvas);
-
-  ctx.fillStyle =
-    "#08080b";
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  const nodes =
-    Array.from(
-      { length: 34 },
-      (_, i) => {
-        const angle =
-          i * 2.399 +
-          time * .00008;
-
-        const radius =
-          Math.sqrt(i / 34) *
-          Math.min(
-            width,
-            height
-          ) *
-          .43;
-
-        return {
-          x:
-            width / 2 +
-            Math.cos(angle) *
-            radius,
-
-          y:
-            height / 2 +
-            Math.sin(angle) *
-            radius
-        };
-      }
-    );
-
-  ctx.lineWidth = 1;
-
-  for (
-    let i = 0;
-    i < nodes.length;
-    i++
-  ) {
-    for (
-      let j = i + 1;
-      j < nodes.length;
-      j++
-    ) {
-      const a =
-        nodes[i];
-
-      const b =
-        nodes[j];
-
-      const distance =
-        Math.hypot(
-          a.x - b.x,
-          a.y - b.y
-        );
-
-      if (
-        distance <
-        Math.min(
-          width,
-          height
-        ) *
-        .2
-      ) {
-        ctx.strokeStyle =
-          `rgba(255,255,255,${Math.max(0, .16 - distance / 1000)})`;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-          a.x,
-          a.y
-        );
-
-        ctx.lineTo(
-          b.x,
-          b.y
-        );
-
-        ctx.stroke();
+  ctx.lineWidth=1;
+  for(let i=0;i<nodes;i++){
+    for(let j=i+1;j<nodes;j++){
+      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);
+      if(d<Math.min(w,h)*.18){
+        ctx.strokeStyle=`rgba(150,175,255,${.22*(1-d/(Math.min(w,h)*.18))})`;
+        ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();
       }
     }
   }
-
-  nodes.forEach(
-    (node, index) => {
-      ctx.fillStyle =
-        index % 7 === 0
-          ? "#d7ff63"
-          : "rgba(255,255,255,.7)";
-
-      ctx.beginPath();
-
-      ctx.arc(
-        node.x,
-        node.y,
-        index % 7 === 0 ? 4 : 2,
-        0,
-        Math.PI * 2
-      );
-
-      ctx.fill();
-    }
-  );
+  pts.forEach((p,i)=>{
+    ctx.fillStyle=`hsl(${190+i*5+t*20} 85% 68%)`;
+    ctx.beginPath();ctx.arc(p.x,p.y,2+(i%4),0,Math.PI*2);ctx.fill();
+  });
 }
-
-
-function drawLanguage(
-  canvas,
-  time = 0
-) {
-  const {
-    ctx,
-    width,
-    height,
-    dpr
-  } = fitCanvas(canvas);
-
-  ctx.fillStyle =
-    "#08080b";
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  const words = [
-    "SELF",
-    "MEANING",
-    "RECURSION",
-    "CONTEXT",
-    "SIGN",
-    "REFERENCE",
-    "SYNTAX",
-    "MEMORY",
-    "LANGUAGE",
-    "MODEL"
-  ];
-
-  ctx.textAlign =
-    "center";
-
-  ctx.textBaseline =
-    "middle";
-
-  words.forEach(
-    (word, i) => {
-      const angle =
-        i / words.length *
-        Math.PI *
-        2 +
-        time * .0001;
-
-      const radius =
-        Math.min(
-          width,
-          height
-        ) *
-        (.18 + (i % 3) * .08);
-
-      const x =
-        width / 2 +
-        Math.cos(angle) *
-        radius;
-
-      const y =
-        height / 2 +
-        Math.sin(angle) *
-        radius;
-
-      ctx.font =
-        `${(10 + (i % 4) * 3) * dpr}px "Space Mono", monospace`;
-
-      ctx.fillStyle =
-        i % 3 === 0
-          ? "#d7ff63"
-          : "rgba(255,255,255,.55)";
-
-      ctx.fillText(
-        word,
-        x,
-        y
-      );
-    }
-  );
-}
-
-
-function drawVisual(
-  canvas,
-  type,
-  time
-) {
-  if (!canvas) return;
-
-  switch (type) {
-    case "fractal":
-      drawFractal(
-        canvas,
-        time
-      );
-      break;
-
-    case "color":
-      drawColor(
-        canvas,
-        time
-      );
-      break;
-
-    case "pattern":
-      drawPattern(
-        canvas,
-        time
-      );
-      break;
-
-    case "number":
-      drawNumber(
-        canvas,
-        time
-      );
-      break;
-
-    case "machine":
-      drawMachine(
-        canvas,
-        time
-      );
-      break;
-
-    case "language":
-      drawLanguage(
-        canvas,
-        time
-      );
-      break;
+function drawLanguage(ctx,w,h,t){
+  const words=["SELF","MEANING","IF","THEN","RECURSE","CONTEXT","SYNTAX","OBJECT","REFER","AGAIN","MAP","SIGN"];
+  ctx.textAlign="center";
+  for(let i=0;i<words.length;i++){
+    const a=i/words.length*Math.PI*2+t*.18;
+    const r=Math.min(w,h)*(.18+.12*Math.sin(i*.9+t));
+    const x=w/2+Math.cos(a)*r*1.7,y=h/2+Math.sin(a)*r;
+    ctx.fillStyle=`hsla(${65+i*18},75%,72%,.85)`;
+    ctx.font=`${Math.max(10,w/52)}px "Space Mono"`;
+    ctx.fillText(words[i],x,y);
+    const j=(i*5+3)%words.length;
+    const a2=j/words.length*Math.PI*2+t*.18;
+    const r2=Math.min(w,h)*(.18+.12*Math.sin(j*.9+t));
+    const x2=w/2+Math.cos(a2)*r2*1.7,y2=h/2+Math.sin(a2)*r2;
+    ctx.strokeStyle="rgba(255,255,255,.08)";
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.stroke();
   }
 }
 
-
-/* =========================================================
-   EXHIBIT CARD ANIMATION
-   ========================================================= */
-
-const exhibitCards =
-  $$(".exhibit");
-
-function animateExhibits(time) {
-  exhibitCards.forEach(
-    (card, index) => {
-      const canvas =
-        $("canvas", card);
-
-      const exhibit =
-        exhibits[index];
-
-      if (
-        canvas &&
-        exhibit
-      ) {
-        drawVisual(
-          canvas,
-          exhibit.type,
-          time
-        );
-      }
-    }
-  );
-
-  requestAnimationFrame(
-    animateExhibits
-  );
-}
-
-if (exhibitCards.length) {
-  requestAnimationFrame(
-    animateExhibits
-  );
-}
-
-
-/* =========================================================
-   EXHIBIT DIALOG
-   ========================================================= */
-
-const dialog =
-  $("#exhibit-dialog");
-
-const dialogClose =
-  $(".dialog-close");
-
-const dialogCanvas =
-  $("#dialog-canvas");
-
-let activeDialogExhibit =
-  null;
-
-let dialogAnimationFrame =
-  null;
-
-
-function populateDialog(
-  exhibit
-) {
-  if (!dialog) return;
-
-  const eyebrow =
-    $(".dialog-copy .eyebrow");
-
-  const title =
-    $(".dialog-copy h2");
-
-  const subtitle =
-    $(".dialog-subtitle");
-
-  const body =
-    $(".dialog-copy p:not(.eyebrow):not(.dialog-subtitle)");
-
-  if (eyebrow) {
-    eyebrow.textContent =
-      exhibit.category;
-  }
-
-  if (title) {
-    title.textContent =
-      exhibit.title;
-  }
-
-  if (subtitle) {
-    subtitle.textContent =
-      exhibit.subtitle;
-  }
-
-  if (body) {
-    body.textContent =
-      exhibit.body;
-  }
-
-  const statElements =
-    $$(".stat", dialog);
-
-  Object.entries(
-    exhibit.stats
-  ).forEach(
-    ([name, value], index) => {
-      const stat =
-        statElements[index];
-
-      if (!stat) return;
-
-      const label =
-        $("span", stat);
-
-      const strong =
-        $("strong", stat);
-
-      if (label) {
-        label.textContent =
-          name;
-      }
-
-      if (strong) {
-        strong.textContent =
-          value;
-      }
-    }
-  );
-}
-
-
-function animateDialog(time) {
-  if (
-    !activeDialogExhibit ||
-    !dialogCanvas
-  ) {
-    return;
-  }
-
-  drawVisual(
-    dialogCanvas,
-    activeDialogExhibit.type,
-    time
-  );
-
-  dialogAnimationFrame =
-    requestAnimationFrame(
-      animateDialog
-    );
-}
-
-
-function openExhibit(index) {
-  if (!dialog) return;
-
-  const exhibit =
-    exhibits[index];
-
-  if (!exhibit) return;
-
-  activeDialogExhibit =
-    exhibit;
-
-  populateDialog(
-    exhibit
-  );
-
+const dialog = document.querySelector("#exhibit-dialog");
+const dialogCanvas = document.querySelector("#dialog-canvas");
+let stopDialogAnimation = null;
+function openExhibit(index){
+  const e=exhibits[index];
+  document.querySelector("#dialog-index").textContent=`EXHIBIT ${String(index+1).padStart(3,"0")} / ${e.category}`;
+  document.querySelector("#dialog-title").textContent=e.title;
+  document.querySelector("#dialog-subtitle").textContent=e.subtitle;
+  document.querySelector("#dialog-body").textContent=e.body;
+  document.querySelector("#dialog-stats").innerHTML=Object.entries(e.stats).map(([k,v])=>`<div class="stat"><span>${k}</span><strong>${v}</strong></div>`).join("");
   dialog.showModal();
-
-  cancelAnimationFrame(
-    dialogAnimationFrame
-  );
-
-  dialogAnimationFrame =
-    requestAnimationFrame(
-      animateDialog
-    );
+  if(stopDialogAnimation) stopDialogAnimation();
+  stopDialogAnimation=animateCanvas(dialogCanvas,e.type,index*101);
 }
+document.querySelector("#dialog-close").addEventListener("click",()=>dialog.close());
+dialog.addEventListener("click",e=>{if(e.target===dialog)dialog.close();});
+dialog.addEventListener("close",()=>{if(stopDialogAnimation) stopDialogAnimation(); stopDialogAnimation=null;});
 
+document.querySelector("#random-exhibit").addEventListener("click",()=>{
+  openExhibit(Math.floor(Math.random()*exhibits.length));
+});
 
-function closeExhibit() {
-  if (!dialog) return;
+const pressure=document.querySelector("#pressure");
+const pressureValue=document.querySelector("#pressure-value");
+pressure.addEventListener("input",()=>pressureValue.textContent=pressure.value);
 
-  activeDialogExhibit =
-    null;
+const namesA=["Recursive","Hyperdimensional","Self-Referential","Entangled","Emergent","Nonlinear","Fractal","Paradoxical"];
+const namesB=["Semantic","Chromatic","Topological","Algorithmic","Acoustic","Biomorphic","Symbolic","Probabilistic"];
+const namesC=["Polytope","Lattice","Engine","Field","Grammar","Manifold","Organism","Cipher"];
 
-  cancelAnimationFrame(
-    dialogAnimationFrame
-  );
-
-  dialog.close();
+let machineStop=null;
+function generate(){
+  const a=document.querySelector("#domain-a").value;
+  const b=document.querySelector("#domain-b").value;
+  const p=Number(pressure.value);
+  const seed=Math.random()*1000;
+  const title=`${namesA[Math.floor(Math.random()*namesA.length)]} ${namesB[Math.floor(Math.random()*namesB.length)]} ${namesC[Math.floor(Math.random()*namesC.length)]}`;
+  const score=Math.min(99.9, 58+p*.38+Math.random()*5);
+  document.querySelector("#generated-title").textContent=title;
+  document.querySelector("#generated-score").textContent=score.toFixed(1);
+  document.querySelector("#generated-kicker").textContent=`SYNTHETIC EXHIBIT ${String(Math.floor(seed)%999).padStart(3,"0")} · ${a.toUpperCase()} × ${b.toUpperCase()}`;
+  document.querySelector("#generated-description").textContent=
+    `A generated conceptual object combining ${a.toLowerCase()} and ${b.toLowerCase()}. At ${p}% complexity pressure, the system increases recursion, interaction density, ambiguity and feedback until the object becomes difficult to summarize without losing important structure.`;
+  const canvas=document.querySelector("#machine-canvas");
+  if(machineStop) machineStop();
+  const types=["fractal","color","pattern","number","network","language"];
+  machineStop=animateCanvas(canvas,types[Math.floor(Math.random()*types.length)],seed);
 }
+document.querySelector("#generate-object").addEventListener("click",generate);
+generate();
 
-
-exhibitCards.forEach(
-  (card, index) => {
-    card.addEventListener(
-      "click",
-      () => openExhibit(index)
-    );
-
-    card.addEventListener(
-      "keydown",
-      event => {
-        if (
-          event.key === "Enter" ||
-          event.key === " "
-        ) {
-          event.preventDefault();
-
-          openExhibit(index);
-        }
-      }
-    );
+const ambient=document.querySelector("#ambient-canvas");
+const actx=ambient.getContext("2d");
+function drawAmbient(time){
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const w=innerWidth*dpr,h=innerHeight*dpr;
+  if(ambient.width!==w||ambient.height!==h){ambient.width=w;ambient.height=h;}
+  actx.clearRect(0,0,w,h);
+  for(let i=0;i<70;i++){
+    const x=(Math.sin(i*991+time*.00005*(1+i%3))*.5+.5)*w;
+    const y=(Math.cos(i*431-time*.00004*(1+i%4))*.5+.5)*h;
+    actx.fillStyle=`rgba(255,255,255,${.05+(i%5)*.012})`;
+    actx.fillRect(x,y,1.2*dpr,1.2*dpr);
   }
-);
-
-
-if (dialogClose) {
-  dialogClose.addEventListener(
-    "click",
-    closeExhibit
-  );
+  requestAnimationFrame(drawAmbient);
 }
-
-
-if (dialog) {
-  dialog.addEventListener(
-    "click",
-    event => {
-      if (
-        event.target === dialog
-      ) {
-        closeExhibit();
-      }
-    }
-  );
-}
-
-
-/* =========================================================
-   COMPLEXITY MACHINE
-   ========================================================= */
-
-const machineCanvas =
-  $("#machine-canvas");
-
-const machineDomain =
-  $("#machine-domain");
-
-const machineIntensity =
-  $("#machine-intensity");
-
-const machineGenerate =
-  $("#machine-generate");
-
-const machineScore =
-  $("#machine-score");
-
-const machineTitle =
-  $("#machine-title");
-
-const machineDescription =
-  $("#machine-description");
-
-const rangeValue =
-  $(".range-value");
-
-
-const domainData = {
-  geometry: {
-    title:
-      "Recursive Geometry Field",
-
-    description:
-      "A recursively transformed geometric system whose local structures continually alter the larger field.",
-
-    base:
-      91
-  },
-
-  color: {
-    title:
-      "Chromatic Interference Field",
-
-    description:
-      "A continuously changing color system built from perceptual contrast, hue drift and overlapping gradients.",
-
-    base:
-      84
-  },
-
-  language: {
-    title:
-      "Self-Referential Language Engine",
-
-    description:
-      "A semantic network in which meaning depends on references that recursively point toward other references.",
-
-    base:
-      89
-  },
-
-  computation: {
-    title:
-      "Recursive Computation Network",
-
-    description:
-      "A network whose state alters the rules governing its next state, producing increasingly complex behavior.",
-
-    base:
-      94
-  },
-
-  pattern: {
-    title:
-      "Emergent Pattern System",
-
-    description:
-      "A field of interacting local rules that generates coherent global structures without a central designer.",
-
-    base:
-      88
-  }
-};
-
-
-let machineSeed =
-  Math.random() *
-  10000;
-
-
-function updateMachineCopy() {
-  if (
-    !machineDomain ||
-    !machineIntensity
-  ) {
-    return;
-  }
-
-  const domain =
-    machineDomain.value;
-
-  const intensity =
-    Number(
-      machineIntensity.value
-    );
-
-  const data =
-    domainData[domain] ||
-    domainData.geometry;
-
-  const score =
-    Math.min(
-      99.9,
-      data.base +
-      intensity *
-      .75 +
-      Math.random() *
-      1.8
-    );
-
-  if (machineTitle) {
-    machineTitle.textContent =
-      data.title;
-  }
-
-  if (machineDescription) {
-    machineDescription.textContent =
-      data.description;
-  }
-
-  if (machineScore) {
-    machineScore.textContent =
-      score.toFixed(1);
-  }
-
-  if (rangeValue) {
-    rangeValue.textContent =
-      intensity;
-  }
-}
-
-
-function drawMachineGenerator(time) {
-  if (!machineCanvas) return;
-
-  const {
-    ctx,
-    width,
-    height
-  } = fitCanvas(machineCanvas);
-
-  ctx.fillStyle =
-    "#09090b";
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  const intensity =
-    Number(
-      machineIntensity?.value ||
-      5
-    );
-
-  const count =
-    35 +
-    intensity * 7;
-
-  const domain =
-    machineDomain?.value ||
-    "geometry";
-
-  const cx =
-    width / 2;
-
-  const cy =
-    height / 2;
-
-  for (
-    let i = 0;
-    i < count;
-    i++
-  ) {
-    const ratio =
-      i / count;
-
-    const angle =
-      i * 2.399 +
-      time * .00015 +
-      machineSeed;
-
-    const radius =
-      Math.sqrt(ratio) *
-      Math.min(
-        width,
-        height
-      ) *
-      .46;
-
-    const wobble =
-      Math.sin(
-        time * .0007 +
-        i * .7
-      ) *
-      intensity *
-      2;
-
-    const x =
-      cx +
-      Math.cos(angle) *
-      (radius + wobble);
-
-    const y =
-      cy +
-      Math.sin(angle) *
-      (radius + wobble);
-
-    const hueBase = {
-      geometry: 165,
-      color: time * .02,
-      language: 75,
-      computation: 250,
-      pattern: 320
-    }[domain] || 165;
-
-    ctx.fillStyle =
-      `hsla(${hueBase + ratio * 120},85%,65%,${.18 + ratio * .65})`;
-
-    ctx.beginPath();
-
-    ctx.arc(
-      x,
-      y,
-      1.5 + ratio * 4,
-      0,
-      Math.PI * 2
-    );
-
-    ctx.fill();
-
-    if (
-      i > 0 &&
-      i % 3 === 0
-    ) {
-      const previousAngle =
-        (i - 3) * 2.399 +
-        time * .00015 +
-        machineSeed;
-
-      const previousRadius =
-        Math.sqrt(
-          (i - 3) /
-          count
-        ) *
-        Math.min(
-          width,
-          height
-        ) *
-        .46;
-
-      const px =
-        cx +
-        Math.cos(
-          previousAngle
-        ) *
-        previousRadius;
-
-      const py =
-        cy +
-        Math.sin(
-          previousAngle
-        ) *
-        previousRadius;
-
-      ctx.strokeStyle =
-        `rgba(255,255,255,${.025 + ratio * .08})`;
-
-      ctx.lineWidth = 1;
-
-      ctx.beginPath();
-
-      ctx.moveTo(
-        px,
-        py
-      );
-
-      ctx.lineTo(
-        x,
-        y
-      );
-
-      ctx.stroke();
-    }
-  }
-
-  requestAnimationFrame(
-    drawMachineGenerator
-  );
-}
-
-
-if (machineCanvas) {
-  requestAnimationFrame(
-    drawMachineGenerator
-  );
-}
-
-
-if (machineIntensity) {
-  machineIntensity.addEventListener(
-    "input",
-    updateMachineCopy
-  );
-}
-
-
-if (machineDomain) {
-  machineDomain.addEventListener(
-    "change",
-    () => {
-      machineSeed =
-        Math.random() *
-        10000;
-
-      updateMachineCopy();
-    }
-  );
-}
-
-
-if (machineGenerate) {
-  machineGenerate.addEventListener(
-    "click",
-    () => {
-      machineSeed =
-        Math.random() *
-        10000;
-
-      updateMachineCopy();
-    }
-  );
-}
-
-
-updateMachineCopy();
-
-
-/* =========================================================
-   SMOOTH INTERNAL LINKS
-   ========================================================= */
-
-$$('a[href^="#"]').forEach(
-  link => {
-    link.addEventListener(
-      "click",
-      event => {
-        const id =
-          link.getAttribute(
-            "href"
-          );
-
-        if (
-          !id ||
-          id === "#"
-        ) {
-          return;
-        }
-
-        const target =
-          $(id);
-
-        if (!target) return;
-
-        event.preventDefault();
-
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
-    );
-  }
-);
-
-
-/* =========================================================
-   RESIZE
-   ========================================================= */
-
-window.addEventListener(
-  "resize",
-  () => {
-    sizeOrbitCanvases();
-  }
-);
+requestAnimationFrame(drawAmbient);
+
+const orb=document.querySelector("#hero-orb");
+window.addEventListener("pointermove",(e)=>{
+  const x=(e.clientX/innerWidth-.5)*12;
+  const y=(e.clientY/innerHeight-.5)*-12;
+  orb.style.transform=`rotateX(${y}deg) rotateY(${x}deg)`;
+},{passive:true});
