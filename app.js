@@ -424,12 +424,12 @@ function drawHeroOrb(ms){
     const phase=i*2.399;
     const speed=.075+(i%5)*.014;
     const a=t*speed+phase;
-    const band=1.34+(i%6)*.14;
+    const band=1.24+(i%6)*.105;
     const wobble=1+Math.sin(t*.21+i*1.73)*.07;
     const rr=r*band*wobble;
     const squash=.54+(i%4)*.075;
-    const driftX=Math.sin(t*.11+i)*r*.10;
-    const driftY=Math.cos(t*.09+i*1.4)*r*.075;
+    const driftX=Math.sin(t*.11+i)*r*.065;
+    const driftY=Math.cos(t*.09+i*1.4)*r*.05;
     const px=cx+Math.cos(a)*rr+driftX;
     const py=cy+Math.sin(a)*rr*squash+driftY;
     const depth=(Math.sin(a)+1)*.5;
