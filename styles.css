@@ -27,7 +27,6 @@ body {
       transparent 34%
     ),
     var(--bg);
-
   color: var(--text);
   font-family: Inter, system-ui, sans-serif;
   overflow-x: hidden;
@@ -56,14 +55,10 @@ button {
 #ambient-canvas {
   position: fixed;
   inset: 0;
-
   width: 100%;
   height: 100%;
-
   z-index: -1;
-
   opacity: .22;
-
   pointer-events: none;
 }
 
@@ -83,9 +78,7 @@ button {
 
   width: 100%;
   max-width: none;
-
   margin: 0;
-
   padding: 22px 28px;
 
   backdrop-filter: blur(16px);
@@ -116,7 +109,6 @@ button {
 .nav {
   display: flex;
   gap: 28px;
-
   font-size: 13px;
   color: var(--muted);
 }
@@ -132,19 +124,15 @@ button {
 
 .section {
   width: min(calc(100% - 56px), var(--max));
-
   margin: 0 auto;
-
   padding: 110px 0;
 }
 
 .eyebrow {
   margin: 0 0 18px;
-
   font-family: "Space Mono", monospace;
   font-size: 11px;
   letter-spacing: .13em;
-
   color: var(--accent);
 }
 
@@ -157,9 +145,7 @@ p {
 
 h1 {
   max-width: 800px;
-
   margin-bottom: 26px;
-
   font-size: clamp(54px, 7vw, 105px);
   line-height: .92;
   letter-spacing: -.065em;
@@ -185,9 +171,7 @@ h3 {
 
   display: grid;
   grid-template-columns: 1.05fr .95fr;
-
   gap: 64px;
-
   align-items: center;
 
   padding-top: 65px;
@@ -195,9 +179,7 @@ h3 {
 
 .lede {
   max-width: 680px;
-
   color: var(--muted);
-
   font-size: clamp(17px, 2vw, 21px);
   line-height: 1.6;
 }
@@ -205,9 +187,7 @@ h3 {
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-
   gap: 12px;
-
   margin-top: 34px;
 }
 
@@ -222,14 +202,12 @@ h3 {
   align-items: center;
 
   min-height: 50px;
-
   padding: 0 20px;
 
   border-radius: 999px;
   border: 1px solid var(--line);
 
   background: transparent;
-
   cursor: pointer;
 
   transition:
@@ -244,11 +222,8 @@ h3 {
 
 .button.primary {
   background: var(--accent);
-
   color: #0d0d0f;
-
   border-color: var(--accent);
-
   font-weight: 700;
 }
 
@@ -286,7 +261,6 @@ h3 {
   position: relative;
 
   min-height: 590px;
-
   padding: 26px;
 
   display: flex;
@@ -309,18 +283,15 @@ h3 {
   display: grid;
   place-items: center;
 
-  perspective: 700px;
-
+  perspective: 900px;
   isolation: isolate;
 }
 
 .orb {
   position: relative;
-
   z-index: 2;
 
   width: 245px;
-
   aspect-ratio: 1;
 
   border-radius: 50%;
@@ -357,31 +328,54 @@ h3 {
 
 
 /* =========================================
-   THREE ORBIT SYSTEM
+   ORBIT SYSTEM
    ========================================= */
 
 /*
-Each orbit consists of two identical copies.
+HTML expected:
 
-orbit-back:
-sits behind the sphere.
+<div class="orb-wrap">
 
-orbit-front:
-sits in front of the sphere.
+  <div class="orbit-plane orbit-plane-a">
+    <div class="orbit orbit-a orbit-back"></div>
+    <div class="orbit orbit-a orbit-front"></div>
+    <div class="orbit-dot"></div>
+  </div>
 
-Together they look like one continuous orbit
-passing around the orb.
+  <div class="orbit-plane orbit-plane-b">
+    <div class="orbit orbit-b orbit-back"></div>
+    <div class="orbit orbit-b orbit-front"></div>
+    <div class="orbit-dot"></div>
+  </div>
+
+  <div class="orbit-plane orbit-plane-c">
+    <div class="orbit orbit-c orbit-back"></div>
+    <div class="orbit orbit-c orbit-front"></div>
+    <div class="orbit-dot"></div>
+  </div>
+
+  <div class="orb" id="hero-orb"></div>
+
+</div>
 */
+
 
 .orbit-plane {
   position: absolute;
-
   inset: 0;
 
   pointer-events: none;
 
   transform-style: preserve-3d;
 }
+
+
+/*
+Both copies occupy the exact same position.
+
+The rear copy is below the sphere.
+The front copy is above the sphere.
+*/
 
 .orbit {
   position: absolute;
@@ -392,10 +386,7 @@ passing around the orb.
   width: 370px;
   height: 370px;
 
-  border:
-    1px solid
-    rgba(255,255,255,.19);
-
+  border: 1px solid rgba(255,255,255,.22);
   border-radius: 50%;
 
   transform-origin: center center;
@@ -404,23 +395,35 @@ passing around the orb.
 }
 
 
-/* Back half */
+/* =========================================
+   BACK HALF
+   ========================================= */
 
 .orbit-back {
   z-index: 1;
 
-  clip-path:
-    inset(0 0 50% 0);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 50%,
+    0 50%
+  );
 }
 
 
-/* Front half */
+/* =========================================
+   FRONT HALF
+   ========================================= */
 
 .orbit-front {
   z-index: 3;
 
-  clip-path:
-    inset(50% 0 0 0);
+  clip-path: polygon(
+    0 50%,
+    100% 50%,
+    100% 100%,
+    0 100%
+  );
 }
 
 
@@ -481,7 +484,7 @@ passing around the orb.
   width: 440px;
   height: 440px;
 
-  opacity: .5;
+  opacity: .52;
 
   transform:
     translate(-50%, -50%)
@@ -491,15 +494,62 @@ passing around the orb.
 
 
 /* =========================================
-   ORBIT ANIMATIONS
+   GREEN ORBIT DOTS
    ========================================= */
 
-/*
-0deg -> 360deg means the final frame is
-visually identical to the first frame.
+.orbit-dot {
+  position: absolute;
 
-This prevents a visible reset.
-*/
+  left: 50%;
+  top: 50%;
+
+  z-index: 4;
+
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  box-shadow:
+    0 0 7px var(--accent),
+    0 0 16px rgba(215,255,99,.75);
+
+  pointer-events: none;
+}
+
+
+/* Orbit A satellite */
+
+.orbit-plane-a .orbit-dot {
+  transform:
+    translate(-50%, -50%)
+    translateY(-185px);
+}
+
+
+/* Orbit B satellite */
+
+.orbit-plane-b .orbit-dot {
+  transform:
+    translate(-50%, -50%)
+    translateY(-185px);
+}
+
+
+/* Orbit C satellite */
+
+.orbit-plane-c .orbit-dot {
+  transform:
+    translate(-50%, -50%)
+    translateY(-220px);
+}
+
+
+/* =========================================
+   SEAMLESS ORBIT ANIMATION
+   ========================================= */
 
 @keyframes orbit-spin-a {
   from {
@@ -564,18 +614,13 @@ This prevents a visible reset.
 .object-meta {
   display: flex;
   justify-content: space-between;
-
   gap: 20px;
 
   padding-top: 18px;
 
-  border-top:
-    1px solid var(--line);
+  border-top: 1px solid var(--line);
 
-  font-family:
-    "Space Mono",
-    monospace;
-
+  font-family: "Space Mono", monospace;
   font-size: 10px;
 
   color: var(--muted);
@@ -588,14 +633,10 @@ This prevents a visible reset.
 
 .manifesto {
   display: grid;
-
-  grid-template-columns:
-    160px 1fr;
-
+  grid-template-columns: 160px 1fr;
   gap: 40px;
 
-  border-top:
-    1px solid var(--line);
+  border-top: 1px solid var(--line);
 }
 
 .manifesto-number {
@@ -604,8 +645,7 @@ This prevents a visible reset.
     "Space Mono",
     monospace;
 
-  color:
-    rgba(255,255,255,.1);
+  color: rgba(255,255,255,.1);
 }
 
 .manifesto p:not(.eyebrow) {
@@ -624,10 +664,7 @@ This prevents a visible reset.
 
 .section-heading {
   display: flex;
-
-  justify-content:
-    space-between;
-
+  justify-content: space-between;
   align-items: end;
 
   gap: 32px;
@@ -637,15 +674,12 @@ This prevents a visible reset.
 
 .section-heading h2 {
   max-width: 850px;
-
   margin-bottom: 0;
 }
 
 .section-note {
   max-width: 280px;
-
   color: var(--muted);
-
   font-size: 13px;
 }
 
@@ -656,10 +690,7 @@ This prevents a visible reset.
 
 .exhibit-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(12, 1fr);
-
+  grid-template-columns: repeat(12, 1fr);
   gap: 18px;
 }
 
@@ -671,7 +702,6 @@ This prevents a visible reset.
   padding: 22px;
 
   position: relative;
-
   overflow: hidden;
 
   cursor: pointer;
@@ -730,8 +760,7 @@ This prevents a visible reset.
 }
 
 .exhibit:hover {
-  transform:
-    translateY(-5px);
+  transform: translateY(-5px);
 
   border-color:
     rgba(255,255,255,.28);
@@ -741,7 +770,6 @@ This prevents a visible reset.
   height: 245px;
 
   border-radius: 16px;
-
   overflow: hidden;
 
   background: #0c0c0f;
@@ -760,10 +788,7 @@ This prevents a visible reset.
 
 .exhibit-topline {
   display: flex;
-
-  justify-content:
-    space-between;
-
+  justify-content: space-between;
   gap: 16px;
 
   font:
@@ -778,15 +803,12 @@ This prevents a visible reset.
 
 .exhibit h3 {
   font-size: 25px;
-
   margin-bottom: 10px;
 }
 
 .exhibit p {
   color: var(--muted);
-
   line-height: 1.5;
-
   font-size: 14px;
 }
 
@@ -796,16 +818,12 @@ This prevents a visible reset.
    ========================================= */
 
 .machine-section {
-  border-top:
-    1px solid var(--line);
+  border-top: 1px solid var(--line);
 }
 
 .machine-layout {
   display: grid;
-
-  grid-template-columns:
-    330px 1fr;
-
+  grid-template-columns: 330px 1fr;
   gap: 20px;
 }
 
@@ -827,16 +845,12 @@ This prevents a visible reset.
   width: 100%;
 
   margin-top: 10px;
-
   padding: 14px 12px;
 
   color: var(--text);
-
   background: #101013;
 
-  border:
-    1px solid var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 12px;
 
   color-scheme: dark;
@@ -849,8 +863,7 @@ This prevents a visible reset.
 
   margin-top: 18px;
 
-  accent-color:
-    var(--accent);
+  accent-color: var(--accent);
 }
 
 .range-value {
@@ -858,8 +871,7 @@ This prevents a visible reset.
 
   margin-top: 4px;
 
-  font-family:
-    "Space Mono";
+  font-family: "Space Mono";
 
   color: var(--text);
 }
@@ -897,19 +909,14 @@ This prevents a visible reset.
 
 .score-row {
   display: flex;
-
-  justify-content:
-    space-between;
-
+  justify-content: space-between;
   align-items: end;
 
   gap: 20px;
 
-  border-top:
-    1px solid var(--line);
+  border-top: 1px solid var(--line);
 
   padding-top: 20px;
-
   margin-top: 24px;
 
   color: var(--muted);
@@ -950,10 +957,7 @@ This prevents a visible reset.
 
 .metric-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
+  grid-template-columns: repeat(4,1fr);
   gap: 16px;
 }
 
@@ -981,7 +985,6 @@ This prevents a visible reset.
   color: var(--muted);
 
   font-size: 14px;
-
   line-height: 1.6;
 }
 
@@ -1017,14 +1020,10 @@ footer {
   padding:
     28px 28px 40px;
 
-  border-top:
-    1px solid var(--line);
+  border-top: 1px solid var(--line);
 
   display: flex;
-
-  justify-content:
-    space-between;
-
+  justify-content: space-between;
   gap: 20px;
 
   color: var(--muted);
@@ -1051,9 +1050,7 @@ dialog {
 
   padding: 0;
 
-  border:
-    1px solid var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 24px;
 
   color: var(--text);
@@ -1091,8 +1088,7 @@ dialog::backdrop {
 
   border-radius: 50%;
 
-  border:
-    1px solid var(--line);
+  border: 1px solid var(--line);
 
   background:
     rgba(0,0,0,.45);
@@ -1102,7 +1098,6 @@ dialog::backdrop {
   font-size: 24px;
 
   display: grid;
-
   place-items: center;
 
   padding: 0 0 4px;
@@ -1112,7 +1107,6 @@ dialog::backdrop {
   outline: none;
 
   appearance: none;
-
   -webkit-appearance: none;
 }
 
@@ -1156,9 +1150,7 @@ dialog::backdrop {
 
 .dialog-stats {
   display: grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
+  grid-template-columns: repeat(4,1fr);
 
   gap: 10px;
 
@@ -1168,9 +1160,7 @@ dialog::backdrop {
 .stat {
   padding: 16px;
 
-  border:
-    1px solid var(--line);
-
+  border: 1px solid var(--line);
   border-radius: 14px;
 }
 
@@ -1202,8 +1192,7 @@ dialog::backdrop {
   }
 
   .hero {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
   .hero-object {
@@ -1216,24 +1205,20 @@ dialog::backdrop {
 
   .exhibit,
   .exhibit:nth-child(n) {
-    grid-column:
-      span 6;
+    grid-column: span 6;
   }
 
   .machine-layout {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
   .metric-grid {
-    grid-template-columns:
-      1fr 1fr;
+    grid-template-columns: 1fr 1fr;
   }
-
 }
 
 
-/* Prevent machine selects from being crushed on tablets */
+/* Tablet machine control protection */
 
 @media
 (min-width: 621px)
@@ -1247,7 +1232,6 @@ and
     padding-top: 0;
     padding-bottom: 0;
   }
-
 }
 
 
@@ -1272,8 +1256,7 @@ and
   /* HEADER */
 
   .site-header {
-    padding:
-      18px 16px;
+    padding: 18px 16px;
   }
 
   .brand {
@@ -1293,6 +1276,8 @@ and
 
   .orb-wrap {
     min-height: 380px;
+
+    perspective: 700px;
   }
 
   .orb {
@@ -1300,7 +1285,7 @@ and
   }
 
 
-  /* Same three-orbit system, scaled for mobile */
+  /* Mobile orbit sizes */
 
   .orbit-plane-a .orbit,
   .orbit-plane-b .orbit {
@@ -1314,11 +1299,26 @@ and
   }
 
 
+  /* Mobile satellite distances */
+
+  .orbit-plane-a .orbit-dot,
+  .orbit-plane-b .orbit-dot {
+    transform:
+      translate(-50%, -50%)
+      translateY(-145px);
+  }
+
+  .orbit-plane-c .orbit-dot {
+    transform:
+      translate(-50%, -50%)
+      translateY(-170px);
+  }
+
+
   /* MANIFESTO */
 
   .manifesto {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
   .manifesto-number {
@@ -1341,16 +1341,14 @@ and
 
   .exhibit,
   .exhibit:nth-child(n) {
-    grid-column:
-      span 12;
+    grid-column: span 12;
   }
 
 
   /* METRICS */
 
   .metric-grid {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
 
@@ -1371,7 +1369,6 @@ and
       18px 15px 22px;
 
     display: flex;
-
     flex-direction: column;
 
     gap: 5px;
@@ -1380,5 +1377,4 @@ and
   footer span {
     line-height: 1.35;
   }
-
 }
