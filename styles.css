@@ -574,3 +574,51 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
   .orb-wrap::before { width:min(104%,430px); }
   .orb-wrap::after { width:min(96%,400px); }
 }
+
+
+/* v6 — seamless field falloff + contained particle envelope. */
+.orb-wrap::before,
+.orb-wrap::after {
+  -webkit-mask-image: radial-gradient(ellipse at center,
+    #000 0%,
+    rgba(0,0,0,.98) 44%,
+    rgba(0,0,0,.76) 61%,
+    rgba(0,0,0,.30) 76%,
+    transparent 94%);
+  mask-image: radial-gradient(ellipse at center,
+    #000 0%,
+    rgba(0,0,0,.98) 44%,
+    rgba(0,0,0,.76) 61%,
+    rgba(0,0,0,.30) 76%,
+    transparent 94%);
+}
+
+
+/* v7 — keep exhibit-dialog scrollbar inside the rounded modal outline. */
+#exhibit-dialog {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  background-clip: padding-box;
+  /* Give the scrollbar rounded-end breathing room instead of touching the corners. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.28) transparent;
+}
+#exhibit-dialog::-webkit-scrollbar {
+  width: 10px;
+}
+#exhibit-dialog::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 18px;
+}
+#exhibit-dialog::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.24);
+  border: 3px solid #0a0a0d;
+  border-radius: 999px;
+}
+#exhibit-dialog::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,.36);
+}
+#exhibit-dialog::-webkit-scrollbar-corner {
+  background: transparent;
+}
