@@ -283,8 +283,171 @@ function drawAmbient(time){
 requestAnimationFrame(drawAmbient);
 
 const orb=document.querySelector("#hero-orb");
-window.addEventListener("pointermove",(e)=>{
-  const x=(e.clientX/innerWidth-.5)*12;
-  const y=(e.clientY/innerHeight-.5)*-12;
-  orb.style.transform=`rotateX(${y}deg) rotateY(${x}deg)`;
+const orbCtx=orb.getContext("2d");
+const orbWrap=orb.closest(".orb-wrap");
+const heroComplexity=document.querySelector("#hero-complexity");
+let orbPointer={x:0,y:0,tx:0,ty:0,active:false};
+let orbLastScoreUpdate=0;
+
+function organicPoint(angle,time,radius,pressure=1){
+  const wave=
+    Math.sin(angle*3 + time*1.15)*.075 +
+    Math.sin(angle*5 - time*.72)*.045 +
+    Math.sin(angle*7 + time*.47)*.025 +
+    Math.sin(angle*2 - time*.31)*.035;
+  const pointerBias=(Math.cos(angle)*orbPointer.x + Math.sin(angle)*orbPointer.y)*.07;
+  return radius*(1+(wave*pressure)+pointerBias);
+}
+
+function makeBlobPath(ctx,cx,cy,r,time,pressure=1){
+  const count=72;
+  ctx.beginPath();
+  for(let i=0;i<=count;i++){
+    const a=(i%count)/count*Math.PI*2;
+    const rr=organicPoint(a,time,r,pressure);
+    const x=cx+Math.cos(a)*rr;
+    const y=cy+Math.sin(a)*rr;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  }
+  ctx.closePath();
+}
+
+function drawHeroOrb(ms){
+  const rect=orb.getBoundingClientRect();
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const w=Math.max(2,Math.round(rect.width*dpr));
+  const h=Math.max(2,Math.round(rect.height*dpr));
+  if(orb.width!==w||orb.height!==h){orb.width=w;orb.height=h;}
+  const t=ms*.001;
+  const cx=w*.5,cy=h*.5,r=Math.min(w,h)*.38;
+
+  orbPointer.x+=(orbPointer.tx-orbPointer.x)*.055;
+  orbPointer.y+=(orbPointer.ty-orbPointer.y)*.055;
+  orbCtx.clearRect(0,0,w,h);
+
+  // atmospheric glow
+  orbCtx.save();
+  makeBlobPath(orbCtx,cx,cy,r*1.05,t,.72);
+  orbCtx.shadowBlur=r*.48;
+  orbCtx.shadowColor=`hsla(${255+Math.sin(t*.35)*45},88%,66%,.48)`;
+  orbCtx.fillStyle="rgba(132,89,255,.12)";
+  orbCtx.fill();
+  orbCtx.restore();
+
+  // Main organic silhouette
+  orbCtx.save();
+  makeBlobPath(orbCtx,cx,cy,r,t,1);
+  orbCtx.clip();
+
+  const bg=orbCtx.createRadialGradient(
+    cx-r*.34+orbPointer.x*r*.22,cy-r*.45+orbPointer.y*r*.18,r*.06,
+    cx,cy,r*1.3
+  );
+  bg.addColorStop(0,"rgba(255,255,255,.98)");
+  bg.addColorStop(.09,`hsl(${188+Math.sin(t*.44)*24} 96% 76%)`);
+  bg.addColorStop(.32,`hsl(${255+Math.sin(t*.31)*36} 91% 65%)`);
+  bg.addColorStop(.55,`hsl(${326+Math.sin(t*.38)*28} 92% 66%)`);
+  bg.addColorStop(.74,`hsl(${49+Math.sin(t*.27)*35} 97% 68%)`);
+  bg.addColorStop(1,`hsl(${158+Math.sin(t*.36)*42} 92% 58%)`);
+  orbCtx.fillStyle=bg;
+  orbCtx.fillRect(0,0,w,h);
+
+  // Moving internal color bodies
+  const lobes=[
+    [0.23,0.18,.42,190, .52],
+    [0.73,0.28,.48,282, .50],
+    [0.67,0.74,.44,332, .44],
+    [0.28,0.75,.42,55, .42],
+    [0.47,0.50,.32,155, .28]
+  ];
+  lobes.forEach((l,i)=>{
+    const ox=Math.sin(t*(.33+i*.037)+i*1.7)*r*.28;
+    const oy=Math.cos(t*(.28+i*.041)+i*2.1)*r*.25;
+    const x=w*l[0]+ox, y=h*l[1]+oy;
+    const gr=orbCtx.createRadialGradient(x,y,0,x,y,r*l[2]);
+    gr.addColorStop(0,`hsla(${l[3]+Math.sin(t*.5+i)*40},100%,68%,${l[4]})`);
+    gr.addColorStop(1,`hsla(${l[3]+80},100%,50%,0)`);
+    orbCtx.globalCompositeOperation="screen";
+    orbCtx.fillStyle=gr;
+    orbCtx.fillRect(0,0,w,h);
+  });
+
+  // Liquid contour filaments
+  orbCtx.globalCompositeOperation="soft-light";
+  orbCtx.lineWidth=Math.max(1,dpr*.7);
+  for(let j=0;j<9;j++){
+    orbCtx.beginPath();
+    for(let i=0;i<=80;i++){
+      const a=i/80*Math.PI*2;
+      const rr=r*(.2+j*.073)+Math.sin(a*(2+j%4)+t*(.55+j*.04)+j)*r*.055;
+      const x=cx+Math.cos(a+t*.035*(j%2?1:-1))*rr;
+      const y=cy+Math.sin(a+t*.035*(j%2?1:-1))*rr*.92;
+      if(i===0)orbCtx.moveTo(x,y);else orbCtx.lineTo(x,y);
+    }
+    orbCtx.strokeStyle=`hsla(${185+j*23+t*6},100%,88%,${.11+j*.015})`;
+    orbCtx.stroke();
+  }
+
+  // Specular depth
+  orbCtx.globalCompositeOperation="screen";
+  const shine=orbCtx.createRadialGradient(cx-r*.4,cy-r*.52,0,cx-r*.32,cy-r*.43,r*.48);
+  shine.addColorStop(0,"rgba(255,255,255,.88)");
+  shine.addColorStop(.12,"rgba(255,255,255,.32)");
+  shine.addColorStop(.52,"rgba(255,255,255,.04)");
+  shine.addColorStop(1,"rgba(255,255,255,0)");
+  orbCtx.fillStyle=shine; orbCtx.fillRect(0,0,w,h);
+
+  const shade=orbCtx.createRadialGradient(cx+r*.36,cy+r*.48,0,cx+r*.25,cy+r*.3,r*.72);
+  shade.addColorStop(0,"rgba(0,0,12,.42)");
+  shade.addColorStop(1,"rgba(0,0,0,0)");
+  orbCtx.globalCompositeOperation="multiply";
+  orbCtx.fillStyle=shade;orbCtx.fillRect(0,0,w,h);
+  orbCtx.restore();
+
+  // Glass rim
+  orbCtx.save();
+  makeBlobPath(orbCtx,cx,cy,r,t,1);
+  orbCtx.lineWidth=Math.max(1.2,dpr);
+  const rim=orbCtx.createLinearGradient(cx-r,cy-r,cx+r,cy+r);
+  rim.addColorStop(0,"rgba(255,255,255,.72)");
+  rim.addColorStop(.32,"rgba(255,255,255,.06)");
+  rim.addColorStop(.72,"rgba(255,255,255,.2)");
+  rim.addColorStop(1,"rgba(255,255,255,.56)");
+  orbCtx.strokeStyle=rim;
+  orbCtx.stroke();
+  orbCtx.restore();
+
+  // tiny orbiting fragments, visually tying the orb to the surrounding orbital system
+  for(let i=0;i<13;i++){
+    const a=t*(.13+(i%3)*.025)+i*2.399;
+    const rr=r*(1.18+(i%4)*.105);
+    const px=cx+Math.cos(a)*rr;
+    const py=cy+Math.sin(a)*rr*.66;
+    const s=(1.2+(i%3)*.7)*dpr;
+    orbCtx.beginPath();orbCtx.arc(px,py,s,0,Math.PI*2);
+    orbCtx.fillStyle=`hsla(${175+i*27+t*9},95%,72%,${.18+(i%4)*.08})`;
+    orbCtx.fill();
+  }
+
+  const tiltX=orbPointer.y*-7;
+  const tiltY=orbPointer.x*8;
+  orb.style.transform=`rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(${1+Math.sin(t*.72)*.018})`;
+
+  if(ms-orbLastScoreUpdate>900){
+    const score=94.7+Math.sin(t*.41)*1.7+Math.sin(t*.13)*.8;
+    heroComplexity.textContent=`${score.toFixed(1)} / 100`;
+    orbLastScoreUpdate=ms;
+  }
+  requestAnimationFrame(drawHeroOrb);
+}
+requestAnimationFrame(drawHeroOrb);
+
+orbWrap.addEventListener("pointermove",(e)=>{
+  const r=orbWrap.getBoundingClientRect();
+  orbPointer.tx=((e.clientX-r.left)/r.width-.5)*2;
+  orbPointer.ty=((e.clientY-r.top)/r.height-.5)*2;
+  orbPointer.active=true;
+},{passive:true});
+orbWrap.addEventListener("pointerleave",()=>{
+  orbPointer.tx=0;orbPointer.ty=0;orbPointer.active=false;
 },{passive:true});
