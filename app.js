@@ -319,7 +319,7 @@ function drawHeroOrb(ms){
   const h=Math.max(2,Math.round(rect.height*dpr));
   if(orb.width!==w||orb.height!==h){orb.width=w;orb.height=h;}
   const t=ms*.001;
-  const cx=w*.5,cy=h*.5,r=Math.min(w,h)*.38;
+  const cx=w*.5,cy=h*.5,r=Math.min(w,h)*.275;
 
   orbPointer.x+=(orbPointer.tx-orbPointer.x)*.055;
   orbPointer.y+=(orbPointer.ty-orbPointer.y)*.055;
@@ -417,16 +417,37 @@ function drawHeroOrb(ms){
   orbCtx.stroke();
   orbCtx.restore();
 
-  // tiny orbiting fragments, visually tying the orb to the surrounding orbital system
-  for(let i=0;i<13;i++){
-    const a=t*(.13+(i%3)*.025)+i*2.399;
-    const rr=r*(1.18+(i%4)*.105);
-    const px=cx+Math.cos(a)*rr;
-    const py=cy+Math.sin(a)*rr*.66;
-    const s=(1.2+(i%3)*.7)*dpr;
+  // Wide generative particle field: dots drift on independent elliptical paths
+  // rather than following visible orbital rings. The larger canvas keeps the
+  // full particle choreography in view instead of clipping it at the orb edge.
+  for(let i=0;i<22;i++){
+    const phase=i*2.399;
+    const speed=.075+(i%5)*.014;
+    const a=t*speed+phase;
+    const band=1.34+(i%6)*.14;
+    const wobble=1+Math.sin(t*.21+i*1.73)*.07;
+    const rr=r*band*wobble;
+    const squash=.54+(i%4)*.075;
+    const driftX=Math.sin(t*.11+i)*r*.10;
+    const driftY=Math.cos(t*.09+i*1.4)*r*.075;
+    const px=cx+Math.cos(a)*rr+driftX;
+    const py=cy+Math.sin(a)*rr*squash+driftY;
+    const depth=(Math.sin(a)+1)*.5;
+    const s=(1.05+(i%4)*.48+depth*.7)*dpr;
+    const alpha=.20+depth*.34+(i%3)*.035;
+    orbCtx.save();
+    orbCtx.shadowBlur=(5+depth*9)*dpr;
+    orbCtx.shadowColor=`hsla(${178+i*23+t*7},96%,72%,${alpha*.8})`;
     orbCtx.beginPath();orbCtx.arc(px,py,s,0,Math.PI*2);
-    orbCtx.fillStyle=`hsla(${175+i*27+t*9},95%,72%,${.18+(i%4)*.08})`;
+    orbCtx.fillStyle=`hsla(${178+i*23+t*7},96%,76%,${alpha})`;
     orbCtx.fill();
+    if(i%5===0){
+      orbCtx.beginPath();
+      orbCtx.arc(px,py,s*2.8,0,Math.PI*2);
+      orbCtx.fillStyle=`hsla(${190+i*19},95%,70%,.035)`;
+      orbCtx.fill();
+    }
+    orbCtx.restore();
   }
 
   const tiltX=orbPointer.y*-7;
