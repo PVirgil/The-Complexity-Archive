@@ -9,48 +9,21 @@
   --max: 1280px;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(
-      circle at 50% -10%,
-      rgba(132, 89, 255, .12),
-      transparent 34%
-    ),
+    radial-gradient(circle at 50% -10%, rgba(132, 89, 255, .12), transparent 34%),
     var(--bg);
   color: var(--text);
   font-family: Inter, system-ui, sans-serif;
   overflow-x: hidden;
 }
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-select,
-input {
-  font: inherit;
-}
-
-button {
-  color: inherit;
-}
-
-
-/* =========================================
-   AMBIENT BACKGROUND
-   ========================================= */
+a { color: inherit; text-decoration: none; }
+button, select, input { font: inherit; }
+button { color: inherit; }
 
 #ambient-canvas {
   position: fixed;
@@ -62,70 +35,46 @@ button {
   pointer-events: none;
 }
 
-
-/* =========================================
-   HEADER
-   ========================================= */
-
 .site-header {
   position: sticky;
   top: 0;
   z-index: 20;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   width: 100%;
   max-width: none;
   margin: 0;
   padding: 22px 28px;
-
   backdrop-filter: blur(16px);
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(5,5,6,.9),
-      rgba(5,5,6,.35)
-    );
+  background: linear-gradient(to bottom, rgba(5,5,6,.9), rgba(5,5,6,.35));
 }
 
 .brand {
   display: flex;
   gap: 10px;
   align-items: center;
-
   font-size: 12px;
   letter-spacing: .12em;
   font-weight: 700;
 }
-
-.brand-mark {
-  color: var(--accent);
-  font-size: 20px;
-}
-
-.nav {
-  display: flex;
-  gap: 28px;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.nav a:hover {
-  color: var(--text);
-}
-
-
-/* =========================================
-   GLOBAL SECTIONS
-   ========================================= */
+.brand-mark { color: var(--accent); font-size: 20px; }
+.nav { display: flex; gap: 28px; font-size: 13px; color: var(--muted); }
+.nav a:hover { color: var(--text); }
 
 .section {
   width: min(calc(100% - 56px), var(--max));
   margin: 0 auto;
   padding: 110px 0;
+}
+
+.hero {
+  min-height: calc(100vh - 70px);
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 64px;
+  align-items: center;
+  padding-top: 65px;
 }
 
 .eyebrow {
@@ -136,13 +85,7 @@ button {
   color: var(--accent);
 }
 
-h1,
-h2,
-h3,
-p {
-  margin-top: 0;
-}
-
+h1, h2, h3, p { margin-top: 0; }
 h1 {
   max-width: 800px;
   margin-bottom: 26px;
@@ -150,33 +93,12 @@ h1 {
   line-height: .92;
   letter-spacing: -.065em;
 }
-
 h2 {
   font-size: clamp(38px, 5vw, 72px);
   line-height: 1;
   letter-spacing: -.05em;
 }
-
-h3 {
-  letter-spacing: -.025em;
-}
-
-
-/* =========================================
-   HERO
-   ========================================= */
-
-.hero {
-  min-height: calc(100vh - 70px);
-
-  display: grid;
-  grid-template-columns: 1.05fr .95fr;
-  gap: 64px;
-  align-items: center;
-
-  padding-top: 65px;
-}
-
+h3 { letter-spacing: -.025em; }
 .lede {
   max-width: 680px;
   color: var(--muted);
@@ -184,757 +106,255 @@ h3 {
   line-height: 1.6;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 34px;
-}
-
-
-/* =========================================
-   BUTTONS
-   ========================================= */
-
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
 .button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-
   min-height: 50px;
   padding: 0 20px;
-
   border-radius: 999px;
   border: 1px solid var(--line);
-
   background: transparent;
   cursor: pointer;
-
-  transition:
-    transform .2s,
-    background .2s,
-    border-color .2s;
+  transition: transform .2s, background .2s, border-color .2s;
 }
-
-.button:hover {
-  transform: translateY(-2px);
-}
-
-.button.primary {
-  background: var(--accent);
-  color: #0d0d0f;
-  border-color: var(--accent);
-  font-weight: 700;
-}
-
-.button.ghost:hover {
-  background: var(--panel-strong);
-}
-
-.full {
-  width: 100%;
-}
-
-
-/* =========================================
-   CARDS
-   ========================================= */
+.button:hover { transform: translateY(-2px); }
+.button.primary { background: var(--accent); color: #0d0d0f; border-color: var(--accent); font-weight: 700; }
+.button.ghost:hover { background: var(--panel-strong); }
+.full { width: 100%; }
 
 .card {
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,.07),
-      rgba(255,255,255,.025)
-    );
-
+  background: linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
   border: 1px solid var(--line);
   border-radius: 24px;
 }
 
-
-/* =========================================
-   HERO OBJECT
-   ========================================= */
-
 .hero-object {
-  position: relative;
-
   min-height: 590px;
   padding: 26px;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   overflow: hidden;
 }
-
-
-/* =========================================
-   HERO ORB
-   ========================================= */
 
 .orb-wrap {
   position: relative;
-
   min-height: 480px;
-
   display: grid;
   place-items: center;
-
-  perspective: 900px;
-  isolation: isolate;
+  perspective: 700px;
 }
-
 .orb {
   position: relative;
   z-index: 2;
-
   width: 245px;
   aspect-ratio: 1;
-
   border-radius: 50%;
-
   background:
-    radial-gradient(
-      circle at 25% 20%,
-      white 0,
-      transparent 7%
-    ),
-    conic-gradient(
-      from 30deg,
-      #92f4ff,
-      #8459ff,
-      #ff5fa2,
-      #ffe973,
-      #5fffc8,
-      #92f4ff
-    );
-
-  filter:
-    saturate(1.2)
-    contrast(1.05);
-
-  box-shadow:
-    0 0 80px rgba(132,89,255,.28);
-
-  animation:
-    breathe 6s ease-in-out infinite,
-    hue 14s linear infinite;
-
+    radial-gradient(circle at 25% 20%, white 0, transparent 7%),
+    conic-gradient(from 30deg, #92f4ff, #8459ff, #ff5fa2, #ffe973, #5fffc8, #92f4ff);
+  filter: saturate(1.2) contrast(1.05);
+  box-shadow: 0 0 80px rgba(132,89,255,.28);
+  animation: breathe 6s ease-in-out infinite, hue 14s linear infinite;
   transform-style: preserve-3d;
 }
-
-
-/* =========================================
-   ORBIT SYSTEM
-   ========================================= */
-
-/*
-HTML expected:
-
-<div class="orb-wrap">
-
-  <div class="orbit-plane orbit-plane-a">
-    <div class="orbit orbit-a orbit-back"></div>
-    <div class="orbit orbit-a orbit-front"></div>
-    <div class="orbit-dot"></div>
-  </div>
-
-  <div class="orbit-plane orbit-plane-b">
-    <div class="orbit orbit-b orbit-back"></div>
-    <div class="orbit orbit-b orbit-front"></div>
-    <div class="orbit-dot"></div>
-  </div>
-
-  <div class="orbit-plane orbit-plane-c">
-    <div class="orbit orbit-c orbit-back"></div>
-    <div class="orbit orbit-c orbit-front"></div>
-    <div class="orbit-dot"></div>
-  </div>
-
-  <div class="orb" id="hero-orb"></div>
-
-</div>
-*/
-
-
-.orbit-plane {
-  position: absolute;
-  inset: 0;
-
-  pointer-events: none;
-
-  transform-style: preserve-3d;
-}
-
-
-/*
-Both copies occupy the exact same position.
-
-The rear copy is below the sphere.
-The front copy is above the sphere.
-*/
-
 .orbit {
   position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  width: 370px;
-  height: 370px;
-
-  border: 1px solid rgba(255,255,255,.22);
-  border-radius: 50%;
-
-  transform-origin: center center;
-
-  pointer-events: none;
-}
-
-
-/* =========================================
-   BACK HALF
-   ========================================= */
-
-.orbit-back {
   z-index: 1;
-
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 50%,
-    0 50%
-  );
-}
-
-
-/* =========================================
-   FRONT HALF
-   ========================================= */
-
-.orbit-front {
-  z-index: 3;
-
-  clip-path: polygon(
-    0 50%,
-    100% 50%,
-    100% 100%,
-    0 100%
-  );
-}
-
-
-/* =========================================
-   ORBIT A
-   ========================================= */
-
-.orbit-plane-a {
-  animation:
-    orbit-spin-a
-    11s
-    linear
-    infinite;
-}
-
-.orbit-plane-a .orbit {
-  transform:
-    translate(-50%, -50%)
-    rotateX(72deg)
-    rotateZ(14deg);
-}
-
-
-/* =========================================
-   ORBIT B
-   ========================================= */
-
-.orbit-plane-b {
-  animation:
-    orbit-spin-b
-    16s
-    linear
-    infinite;
-}
-
-.orbit-plane-b .orbit {
-  transform:
-    translate(-50%, -50%)
-    rotateY(67deg)
-    rotateZ(35deg);
-}
-
-
-/* =========================================
-   ORBIT C
-   ========================================= */
-
-.orbit-plane-c {
-  animation:
-    orbit-spin-c
-    23s
-    linear
-    infinite
-    reverse;
-}
-
-.orbit-plane-c .orbit {
-  width: 440px;
-  height: 440px;
-
-  opacity: .52;
-
-  transform:
-    translate(-50%, -50%)
-    rotateX(58deg)
-    rotateY(35deg);
-}
-
-
-/* =========================================
-   GREEN ORBIT DOTS
-   ========================================= */
-
-.orbit-dot {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  z-index: 4;
-
-  width: 9px;
-  height: 9px;
-
+  width: 370px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255,255,255,.19);
   border-radius: 50%;
-
+}
+.orbit::after {
+  content:"";
+  position:absolute;
+  width:7px; height:7px; border-radius:50%;
   background: var(--accent);
-
-  box-shadow:
-    0 0 7px var(--accent),
-    0 0 16px rgba(215,255,99,.75);
-
-  pointer-events: none;
+  left: 48%; top: -4px;
+  box-shadow: 0 0 18px var(--accent);
 }
-
-
-/* Orbit A satellite */
-
-.orbit-plane-a .orbit-dot {
-  transform:
-    translate(-50%, -50%)
-    translateY(-185px);
-}
-
-
-/* Orbit B satellite */
-
-.orbit-plane-b .orbit-dot {
-  transform:
-    translate(-50%, -50%)
-    translateY(-185px);
-}
-
-
-/* Orbit C satellite */
-
-.orbit-plane-c .orbit-dot {
-  transform:
-    translate(-50%, -50%)
-    translateY(-220px);
-}
-
-
-/* =========================================
-   SEAMLESS ORBIT ANIMATION
-   ========================================= */
-
-@keyframes orbit-spin-a {
-  from {
-    transform: rotateZ(0deg);
-  }
-
-  to {
-    transform: rotateZ(360deg);
-  }
-}
-
-@keyframes orbit-spin-b {
-  from {
-    transform: rotateZ(0deg);
-  }
-
-  to {
-    transform: rotateZ(360deg);
-  }
-}
-
-@keyframes orbit-spin-c {
-  from {
-    transform: rotateZ(0deg);
-  }
-
-  to {
-    transform: rotateZ(360deg);
-  }
-}
-
-
-/* =========================================
-   ORB ANIMATIONS
-   ========================================= */
-
-@keyframes breathe {
-  50% {
-    transform:
-      scale(1.08)
-      rotate(12deg);
-
-    border-radius:
-      42% 58% 61% 39% /
-      53% 37% 63% 47%;
-  }
-}
-
-@keyframes hue {
-  to {
-    filter:
-      hue-rotate(360deg)
-      saturate(1.25);
-  }
-}
-
-
-/* =========================================
-   HERO OBJECT META
-   ========================================= */
-
+.orbit-a { z-index: 1; transform: rotateX(72deg) rotateZ(14deg); animation: spinA 11s linear infinite; }
+.orbit-b { z-index: 3; transform: rotateY(67deg) rotateZ(35deg); animation: spinB 16s linear infinite; }
+.orbit-c { z-index: 1; width: 440px; transform: rotateX(58deg) rotateY(35deg); animation: spinA 23s linear reverse infinite; opacity:.5; }
 .object-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-
-  padding-top: 18px;
-
-  border-top: 1px solid var(--line);
-
-  font-family: "Space Mono", monospace;
-  font-size: 10px;
-
-  color: var(--muted);
+  display:flex; justify-content:space-between; gap:20px;
+  padding-top:18px; border-top:1px solid var(--line);
+  font-family:"Space Mono", monospace; font-size:10px; color:var(--muted);
 }
 
-
-/* =========================================
-   MANIFESTO
-   ========================================= */
+@keyframes breathe { 50% { transform: scale(1.08) rotate(12deg); border-radius: 42% 58% 61% 39% / 53% 37% 63% 47%; } }
+@keyframes hue { to { filter: hue-rotate(360deg) saturate(1.25); } }
+@keyframes spinA { to { transform: rotateX(72deg) rotateZ(374deg); } }
+@keyframes spinB { to { transform: rotateY(427deg) rotateZ(35deg); } }
 
 .manifesto {
-  display: grid;
-  grid-template-columns: 160px 1fr;
-  gap: 40px;
-
-  border-top: 1px solid var(--line);
+  display:grid; grid-template-columns: 160px 1fr; gap:40px;
+  border-top:1px solid var(--line);
 }
-
-.manifesto-number {
-  font:
-    700 70px/1
-    "Space Mono",
-    monospace;
-
-  color: rgba(255,255,255,.1);
-}
-
-.manifesto p:not(.eyebrow) {
-  max-width: 820px;
-
-  color: var(--muted);
-
-  font-size: 19px;
-  line-height: 1.7;
-}
-
-
-/* =========================================
-   SECTION HEADINGS
-   ========================================= */
+.manifesto-number { font: 700 70px/1 "Space Mono", monospace; color: rgba(255,255,255,.1); }
+.manifesto p:not(.eyebrow) { max-width:820px; color:var(--muted); font-size:19px; line-height:1.7; }
 
 .section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-
-  gap: 32px;
-
-  margin-bottom: 40px;
+  display:flex; justify-content:space-between; align-items:end; gap:32px; margin-bottom:40px;
 }
-
-.section-heading h2 {
-  max-width: 850px;
-  margin-bottom: 0;
-}
-
-.section-note {
-  max-width: 280px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-
-/* =========================================
-   EXHIBIT GRID
-   ========================================= */
+.section-heading h2 { max-width:850px; margin-bottom:0; }
+.section-note { max-width:280px; color:var(--muted); font-size:13px; }
 
 .exhibit-grid {
-  display: grid;
+  display:grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 18px;
+  gap:18px;
 }
-
 .exhibit {
   grid-column: span 4;
-
   min-height: 390px;
-
   padding: 22px;
-
-  position: relative;
-  overflow: hidden;
-
-  cursor: pointer;
-
-  transition:
-    transform .25s,
-    border-color .25s;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  transition: transform .25s, border-color .25s;
 }
-
-
-/* Shape */
-
-.exhibit:nth-child(1) {
-  grid-column: span 7;
-  order: 1;
-}
-
-
-/* Color */
-
-.exhibit:nth-child(2) {
-  grid-column: span 5;
-  order: 2;
-}
-
-
-/* Pattern */
-
-.exhibit:nth-child(3) {
-  grid-column: span 4;
-  order: 3;
-}
-
-
-/* Number */
-
-.exhibit:nth-child(4) {
-  grid-column: span 4;
-  order: 4;
-}
-
-
-/* Language */
-
-.exhibit:nth-child(6) {
-  grid-column: span 4;
-  order: 5;
-}
-
-
-/* Machine */
-
-.exhibit:nth-child(5) {
-  grid-column: span 12;
-  order: 6;
-}
-
-.exhibit:hover {
-  transform: translateY(-5px);
-
-  border-color:
-    rgba(255,255,255,.28);
-}
-
+.exhibit:nth-child(1) { grid-column: span 7; order: 1; }
+.exhibit:nth-child(2) { grid-column: span 5; order: 2; }
+.exhibit:nth-child(3) { grid-column: span 4; order: 3; }
+.exhibit:nth-child(4) { grid-column: span 4; order: 4; }
+.exhibit:nth-child(6) { grid-column: span 4; order: 5; }
+.exhibit:nth-child(5) { grid-column: span 12; order: 6; }
+.exhibit:hover { transform: translateY(-5px); border-color: rgba(255,255,255,.28); }
 .exhibit-visual {
-  height: 245px;
-
-  border-radius: 16px;
-  overflow: hidden;
-
-  background: #0c0c0f;
-
-  margin-bottom: 24px;
-
-  position: relative;
+  height:245px; border-radius:16px; overflow:hidden;
+  background:#0c0c0f; margin-bottom:24px; position:relative;
 }
-
-.exhibit-visual canvas {
-  width: 100%;
-  height: 100%;
-
-  display: block;
-}
-
+.exhibit-visual canvas { width:100%; height:100%; display:block; }
 .exhibit-topline {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-
-  font:
-    10px/1
-    "Space Mono",
-    monospace;
-
-  color: var(--muted);
-
-  margin-bottom: 12px;
+  display:flex; justify-content:space-between; gap:16px;
+  font: 10px/1 "Space Mono", monospace; color:var(--muted); margin-bottom:12px;
 }
+.exhibit h3 { font-size:25px; margin-bottom:10px; }
+.exhibit p { color:var(--muted); line-height:1.5; font-size:14px; }
 
-.exhibit h3 {
-  font-size: 25px;
-  margin-bottom: 10px;
-}
-
-.exhibit p {
-  color: var(--muted);
-  line-height: 1.5;
-  font-size: 14px;
-}
-
-
-/* =========================================
-   COMPLEXITY MACHINE
-   ========================================= */
-
-.machine-section {
-  border-top: 1px solid var(--line);
-}
-
-.machine-layout {
-  display: grid;
-  grid-template-columns: 330px 1fr;
-  gap: 20px;
-}
-
-.machine-controls {
-  padding: 24px;
-}
-
+.machine-section { border-top:1px solid var(--line); }
+.machine-layout { display:grid; grid-template-columns: 330px 1fr; gap:20px; }
+.machine-controls { padding:24px; }
 .machine-controls label {
-  display: block;
-
-  margin-bottom: 24px;
-
-  color: var(--muted);
-
-  font-size: 12px;
+  display:block; margin-bottom:24px; color:var(--muted); font-size:12px;
 }
-
 .machine-controls select {
-  width: 100%;
-
-  margin-top: 10px;
-  padding: 14px 12px;
-
-  color: var(--text);
-  background: #101013;
-
-  border: 1px solid var(--line);
-  border-radius: 12px;
-
-  color-scheme: dark;
-
-  outline: none;
+  width:100%; margin-top:10px; padding:14px 12px;
+  color:var(--text); background:#101013; border:1px solid var(--line); border-radius:12px;
 }
-
-.machine-controls input[type=range] {
-  width: 100%;
-
-  margin-top: 18px;
-
-  accent-color: var(--accent);
-}
-
-.range-value {
-  display: block;
-
-  margin-top: 4px;
-
-  font-family: "Space Mono";
-
-  color: var(--text);
-}
-
-.machine-output {
-  overflow: hidden;
-}
-
-#machine-canvas {
-  width: 100%;
-  height: 430px;
-
-  display: block;
-
-  background: #09090b;
-}
-
-.machine-copy {
-  padding: 28px;
-}
-
-.machine-copy h3 {
-  font-size: 34px;
-
-  margin-bottom: 10px;
-}
-
-.machine-copy p:not(.eyebrow) {
-  color: var(--muted);
-
-  max-width: 800px;
-
-  line-height: 1.6;
-}
-
+.machine-controls input[type=range] { width:100%; margin-top:18px; accent-color:var(--accent); }
+.range-value { display:block; margin-top:4px; font-family:"Space Mono"; color:var(--text); }
+.machine-output { overflow:hidden; }
+#machine-canvas { width:100%; height:430px; display:block; background:#09090b; }
+.machine-copy { padding:28px; }
+.machine-copy h3 { font-size:34px; margin-bottom:10px; }
+.machine-copy p:not(.eyebrow) { color:var(--muted); max-width:800px; line-height:1.6; }
 .score-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
+  display:flex; justify-content:space-between; align-items:end; gap:20px;
+  border-top:1px solid var(--line); padding-top:20px; margin-top:24px; color:var(--muted);
+}
+.score-row strong { font: 700 42px/1 "Space Mono"; color:var(--accent); }
 
-  gap: 20px;
+.metric-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+.metric { padding:24px; min-height:230px; }
+.metric span { font:12px "Space Mono"; color:var(--accent); }
+.metric h3 { font-size:24px; margin-top:50px; }
+.metric p { color:var(--muted); font-size:14px; line-height:1.6; }
 
-  border-top: 1px solid var(--line);
+.closing { text-align:center; padding-top:160px; padding-bottom:170px; }
+.closing h2 { max-width:950px; margin:0 auto 42px; }
 
-  padding-top: 20px;
-  margin-top: 24px;
-
-  color: var(--muted);
+footer {
+  width:100%;
+  margin:0; padding:28px 28px 40px; border-top:1px solid var(--line);
+  display:flex; justify-content:space-between; gap:20px; color:var(--muted);
+  font:10px "Space Mono";
 }
 
-.score-row strong {
-  font:
-    700 42px/1
-    "Space Mono";
+dialog {
+  width:min(1120px, calc(100% - 28px));
+  max-height:calc(100vh - 28px);
+  padding:0; border:1px solid var(--line); border-radius:24px;
+  color:var(--text); background:#0a0a0d; overflow:auto;
+}
+dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
+.dialog-close {
+  position:fixed; z-index:4; margin:18px; right:max(18px, calc((100vw - 1120px)/2 + 18px));
+  width:42px; height:42px; border-radius:50%; border:1px solid var(--line);
+  background:rgba(0,0,0,.45); cursor:pointer; font-size:24px;
+  display:grid; place-items:center; padding:0; line-height:1; outline:none;
+  appearance:none; -webkit-appearance:none;
+}
+.dialog-visual { height:min(52vh, 590px); background:#050506; }
+.dialog-visual canvas { width:100%; height:100%; }
+.dialog-copy { padding:34px; }
+.dialog-copy h2 { font-size:clamp(38px,6vw,70px); margin-bottom:14px; }
+.dialog-subtitle { font-size:18px; color:var(--text)!important; }
+.dialog-copy p:not(.eyebrow) { color:var(--muted); max-width:800px; line-height:1.7; }
+.dialog-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:30px; }
+.stat { padding:16px; border:1px solid var(--line); border-radius:14px; }
+.stat span { display:block; color:var(--muted); font-size:11px; margin-bottom:9px; }
+.stat strong { font:700 22px "Space Mono"; }
 
-  color: var(--accent);
+@media (max-width: 900px) {
+  .nav { display:none; }
+  .hero { grid-template-columns:1fr; }
+  .hero-object { min-height:470px; }
+  .orb-wrap { min-height:380px; }
+  .exhibit, .exhibit:nth-child(n) { grid-column:span 6; }
+  .machine-layout { grid-template-columns:1fr; }
+  .metric-grid { grid-template-columns:1fr 1fr; }
+}
+@media (max-width: 620px) {
+  .section { width:min(calc(100% - 30px),var(--max)); padding-top:78px; padding-bottom:78px; }
+  footer { width:100%; padding:18px 15px 22px; gap:5px; }
+  .site-header { padding:18px 16px; }
+  .brand { font-size:10px; }
+  h1 { font-size:54px; }
+  .manifesto { grid-template-columns:1fr; }
+  .manifesto-number { font-size:44px; }
+  .section-heading { display:block; }
+  .section-note { margin-top:16px; }
+  .exhibit, .exhibit:nth-child(n) { grid-column:span 12; }
+  .metric-grid { grid-template-columns:1fr; }
+  .dialog-stats { grid-template-columns:1fr 1fr; }
+  footer { flex-direction:column; }
+  .orbit { width:290px; }
+  .orbit-c { width:340px; }
+  .orb { width:190px; }
 }
 
 
-/* =========================================
-   FOCUS STATES
-   ========================================= */
+/* True front/back hero orbit: two halves of the same ellipse straddle the orb. */
+.orb-wrap .orbit { display: none; }
+.orb-wrap::before,
+.orb-wrap::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(78%, 440px);
+  aspect-ratio: 1.75 / 1;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 50%;
+  transform: translate(-50%,-50%) rotate(-18deg);
+  pointer-events: none;
+}
+.orb-wrap::before {
+  z-index: 1;
+  clip-path: inset(0 0 50% 0);
+}
+.orb-wrap::after {
+  z-index: 3;
+  clip-path: inset(50% 0 0 0);
+}
+.orb { z-index: 2; }
 
+/* Keyboard focus remains accessible without browser-blue control outlines. */
 .dialog-close:focus,
 .dialog-close:focus-visible,
 .machine-controls select:focus,
@@ -944,437 +364,182 @@ The front copy is above the sphere.
 .machine-controls button:focus,
 .machine-controls button:focus-visible {
   outline: none;
-
-  box-shadow:
-    0 0 0 2px
-    rgba(215,255,99,.45);
+  box-shadow: 0 0 0 2px rgba(215,255,99,.45);
 }
 
-
-/* =========================================
-   METRICS
-   ========================================= */
-
-.metric-grid {
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 16px;
-}
-
-.metric {
-  padding: 24px;
-
-  min-height: 230px;
-}
-
-.metric span {
-  font:
-    12px
-    "Space Mono";
-
-  color: var(--accent);
-}
-
-.metric h3 {
-  font-size: 24px;
-
-  margin-top: 50px;
-}
-
-.metric p {
-  color: var(--muted);
-
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-
-/* =========================================
-   CLOSING
-   ========================================= */
-
-.closing {
-  text-align: center;
-
-  padding-top: 160px;
-  padding-bottom: 170px;
-}
-
-.closing h2 {
-  max-width: 950px;
-
-  margin:
-    0 auto 42px;
-}
-
-
-/* =========================================
-   FOOTER
-   ========================================= */
-
-footer {
-  width: 100%;
-
-  margin: 0;
-
-  padding:
-    28px 28px 40px;
-
-  border-top: 1px solid var(--line);
-
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-
-  color: var(--muted);
-
-  font:
-    10px
-    "Space Mono";
-}
-
-
-/* =========================================
-   EXHIBIT DIALOG
-   ========================================= */
-
-dialog {
-  width:
-    min(
-      1120px,
-      calc(100% - 28px)
-    );
-
-  max-height:
-    calc(100vh - 28px);
-
-  padding: 0;
-
-  border: 1px solid var(--line);
-  border-radius: 24px;
-
-  color: var(--text);
-
-  background: #0a0a0d;
-
-  overflow: auto;
-}
-
-dialog::backdrop {
-  background:
-    rgba(0,0,0,.8);
-
-  backdrop-filter:
-    blur(12px);
-}
-
-.dialog-close {
-  position: fixed;
-
-  z-index: 4;
-
-  margin: 18px;
-
-  right:
-    max(
-      18px,
-      calc(
-        (100vw - 1120px) / 2 + 18px
-      )
-    );
-
-  width: 42px;
-  height: 42px;
-
-  border-radius: 50%;
-
-  border: 1px solid var(--line);
-
-  background:
-    rgba(0,0,0,.45);
-
-  cursor: pointer;
-
-  font-size: 24px;
-
-  display: grid;
-  place-items: center;
-
-  padding: 0 0 4px;
-
-  line-height: 1;
-
+/* Keep native select arrows light on the dark machine controls. */
+.machine-controls select {
+  color-scheme: dark;
   outline: none;
-
-  appearance: none;
-  -webkit-appearance: none;
 }
 
-.dialog-visual {
-  height:
-    min(52vh, 590px);
 
-  background: #050506;
+@media (max-width: 620px) {
+  .orb-wrap::before,
+  .orb-wrap::after {
+    width: min(92%, 340px);
+    aspect-ratio: 1.72 / 1;
+  }
+  footer span { line-height: 1.35; }
 }
 
-.dialog-visual canvas {
-  width: 100%;
-  height: 100%;
+
+/* v4 — restore three orbital planes. Each orbit is split into a back half
+   (below the orb) and a front half (above the orb). */
+.orb-wrap::before,
+.orb-wrap::after {
+  width: min(78%, 440px);
+  aspect-ratio: 1.75 / 1;
+  transform: translate(-50%,-50%) rotate(-18deg);
 }
-
-.dialog-copy {
-  padding: 34px;
-}
-
-.dialog-copy h2 {
-  font-size:
-    clamp(38px,6vw,70px);
-
-  margin-bottom: 14px;
-}
-
-.dialog-subtitle {
-  font-size: 18px;
-
-  color:
-    var(--text) !important;
-}
-
-.dialog-copy p:not(.eyebrow) {
-  color: var(--muted);
-
-  max-width: 800px;
-
-  line-height: 1.7;
-}
-
-.dialog-stats {
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-
-  gap: 10px;
-
-  margin-top: 30px;
-}
-
-.stat {
-  padding: 16px;
-
-  border: 1px solid var(--line);
-  border-radius: 14px;
-}
-
-.stat span {
+.orb-wrap .orbit {
   display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+  animation: none;
+  opacity: 1;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 50%;
+}
+.orb-wrap .orbit::after { display: none; }
 
-  color: var(--muted);
-
-  font-size: 11px;
-
-  margin-bottom: 9px;
+/* Orbit 2: rear half */
+.orb-wrap .orbit-a {
+  z-index: 1;
+  width: min(70%, 390px);
+  aspect-ratio: 1.55 / 1;
+  transform: translate(-50%,-50%) rotate(52deg);
+  clip-path: inset(0 0 50% 0);
+}
+/* Orbit 2: front half */
+.orb-wrap .orbit-a::before {
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:50%;
+  clip-path: inset(50% 0 0 0);
+  transform:none;
+}
+/* Put the front half in a separate overlay using a box-shadow-free duplicate. */
+.orb-wrap .orbit-b {
+  z-index: 3;
+  width: min(70%, 390px);
+  aspect-ratio: 1.55 / 1;
+  transform: translate(-50%,-50%) rotate(52deg);
+  clip-path: inset(50% 0 0 0);
 }
 
-.stat strong {
-  font:
-    700 22px
-    "Space Mono";
+/* Orbit 3: use orbit-c for rear half and an extra pseudo ring on hero-object. */
+.orb-wrap .orbit-c {
+  z-index: 1;
+  width: min(88%, 490px);
+  aspect-ratio: 2.15 / 1;
+  transform: translate(-50%,-50%) rotate(18deg);
+  clip-path: inset(0 0 50% 0);
+  opacity:.65;
+}
+.orb-wrap .orbit-c::before {
+  display:none;
+}
+.hero-object { position: relative; }
+.hero-object::after {
+  content:"";
+  position:absolute;
+  z-index:3;
+  left:50%;
+  top:calc(50% - 24px);
+  width:min(76%, 490px);
+  aspect-ratio:2.15 / 1;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;
+  transform:translate(-50%,-50%) rotate(18deg);
+  clip-path:inset(50% 0 0 0);
+  pointer-events:none;
 }
 
-
-/* =========================================
-   TABLET
-   ========================================= */
-
-@media (max-width: 900px) {
-
-  .nav {
-    display: none;
-  }
-
-  .hero {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-object {
-    min-height: 470px;
-  }
-
-  .orb-wrap {
-    min-height: 380px;
-  }
-
-  .exhibit,
-  .exhibit:nth-child(n) {
-    grid-column: span 6;
-  }
-
-  .machine-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .metric-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+/* Raise the close glyph slightly while keeping the button itself centered. */
+.dialog-close {
+  padding-bottom: 4px;
 }
 
-
-/* Tablet machine control protection */
-
-@media
-(min-width: 621px)
-and
-(max-width: 1024px) {
-
+/* Tablet: prevent machine domain selects from being vertically crushed. */
+@media (min-width: 621px) and (max-width: 1024px) {
   .machine-controls select {
     min-height: 50px;
     height: 50px;
-
     padding-top: 0;
     padding-bottom: 0;
   }
 }
 
+@media (max-width: 620px) {
+  .orb-wrap::before,
+  .orb-wrap::after {
+    width:min(92%,340px);
+  }
+  .orb-wrap .orbit-a,
+  .orb-wrap .orbit-b {
+    width:min(82%,310px);
+  }
+  .orb-wrap .orbit-c {
+    width:min(96%,360px);
+  }
+  .hero-object::after {
+    width:min(78%,360px);
+    top:calc(50% - 18px);
+  }
+}
+
 
 /* =========================================
-   MOBILE
+   CANVAS HERO ORBITS — FINAL OVERRIDE
    ========================================= */
 
+.orb-wrap {
+  position: relative;
+  min-height: 480px;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  perspective: none;
+}
+
+/* Disable all legacy DOM orbit elements/rules if any remain elsewhere. */
+.orb-wrap .orbit,
+.orb-wrap .orbit-plane,
+.orb-wrap .orbit-pair,
+.orb-wrap .orbit-set,
+.orb-wrap .orbit-dot {
+  display: none !important;
+}
+
+#orbit-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.orb {
+  position: relative;
+  z-index: 2;
+}
+
+/* Tablet/mobile keeps the same renderer; only the stage shrinks. */
+@media (max-width: 900px) {
+  .orb-wrap {
+    min-height: 420px;
+  }
+}
+
 @media (max-width: 620px) {
-
-  .section {
-    width:
-      min(
-        calc(100% - 30px),
-        var(--max)
-      );
-
-    padding-top: 78px;
-    padding-bottom: 78px;
-  }
-
-
-  /* HEADER */
-
-  .site-header {
-    padding: 18px 16px;
-  }
-
-  .brand {
-    font-size: 10px;
-  }
-
-
-  /* HERO */
-
-  h1 {
-    font-size: 54px;
-  }
-
-  .hero-object {
-    min-height: 470px;
-  }
-
   .orb-wrap {
     min-height: 380px;
-
-    perspective: 700px;
-  }
-
-  .orb {
-    width: 190px;
-  }
-
-
-  /* Mobile orbit sizes */
-
-  .orbit-plane-a .orbit,
-  .orbit-plane-b .orbit {
-    width: 290px;
-    height: 290px;
-  }
-
-  .orbit-plane-c .orbit {
-    width: 340px;
-    height: 340px;
-  }
-
-
-  /* Mobile satellite distances */
-
-  .orbit-plane-a .orbit-dot,
-  .orbit-plane-b .orbit-dot {
-    transform:
-      translate(-50%, -50%)
-      translateY(-145px);
-  }
-
-  .orbit-plane-c .orbit-dot {
-    transform:
-      translate(-50%, -50%)
-      translateY(-170px);
-  }
-
-
-  /* MANIFESTO */
-
-  .manifesto {
-    grid-template-columns: 1fr;
-  }
-
-  .manifesto-number {
-    font-size: 44px;
-  }
-
-
-  /* HEADINGS */
-
-  .section-heading {
-    display: block;
-  }
-
-  .section-note {
-    margin-top: 16px;
-  }
-
-
-  /* EXHIBITS */
-
-  .exhibit,
-  .exhibit:nth-child(n) {
-    grid-column: span 12;
-  }
-
-
-  /* METRICS */
-
-  .metric-grid {
-    grid-template-columns: 1fr;
-  }
-
-
-  /* DIALOG */
-
-  .dialog-stats {
-    grid-template-columns:
-      1fr 1fr;
-  }
-
-
-  /* FOOTER */
-
-  footer {
-    width: 100%;
-
-    padding:
-      18px 15px 22px;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 5px;
-  }
-
-  footer span {
-    line-height: 1.35;
   }
 }
