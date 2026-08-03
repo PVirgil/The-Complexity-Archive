@@ -149,16 +149,31 @@ h3 { letter-spacing: -.025em; }
 .orb {
   position: relative;
   z-index: 2;
-  width: 245px;
+  width: min(72%, 350px);
+  aspect-ratio: 1;
+  display: block;
+  filter: saturate(1.12) contrast(1.03);
+  transform-style: preserve-3d;
+  will-change: transform, filter;
+}
+.orb-halo {
+  position: absolute;
+  z-index: 0;
+  width: 310px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 25% 20%, white 0, transparent 7%),
-    conic-gradient(from 30deg, #92f4ff, #8459ff, #ff5fa2, #ffe973, #5fffc8, #92f4ff);
-  filter: saturate(1.2) contrast(1.05);
-  box-shadow: 0 0 80px rgba(132,89,255,.28);
-  animation: breathe 6s ease-in-out infinite, hue 14s linear infinite;
-  transform-style: preserve-3d;
+  pointer-events: none;
+  filter: blur(38px);
+  mix-blend-mode: screen;
+}
+.orb-halo-a {
+  background: radial-gradient(circle, rgba(132,89,255,.23), rgba(255,95,162,.08) 48%, transparent 72%);
+  animation: haloPulse 7s ease-in-out infinite alternate;
+}
+.orb-halo-b {
+  width: 250px;
+  background: radial-gradient(circle, rgba(95,255,200,.16), rgba(146,244,255,.05) 50%, transparent 72%);
+  animation: haloDrift 9s ease-in-out infinite alternate;
 }
 .orbit {
   position: absolute;
@@ -185,8 +200,8 @@ h3 { letter-spacing: -.025em; }
   font-family:"Space Mono", monospace; font-size:10px; color:var(--muted);
 }
 
-@keyframes breathe { 50% { transform: scale(1.08) rotate(12deg); border-radius: 42% 58% 61% 39% / 53% 37% 63% 47%; } }
-@keyframes hue { to { filter: hue-rotate(360deg) saturate(1.25); } }
+@keyframes haloPulse { from { transform: scale(.86); opacity: .7; } to { transform: scale(1.18); opacity: 1; } }
+@keyframes haloDrift { from { transform: translate(-28px, 18px) scale(.92); } to { transform: translate(34px, -24px) scale(1.12); } }
 @keyframes spinA { to { transform: rotateX(72deg) rotateZ(374deg); } }
 @keyframes spinB { to { transform: rotateY(427deg) rotateZ(35deg); } }
 
@@ -466,7 +481,7 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
 }
 
 /* Tablet: prevent machine domain selects from being vertically crushed. */
-@media (min-width: 621px) and (max-width: 1300px) {
+@media (min-width: 621px) and (max-width: 1024px) {
   .machine-controls select {
     min-height: 50px;
     height: 50px;
