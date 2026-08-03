@@ -507,3 +507,70 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
     top:calc(50% - 18px);
   }
 }
+
+
+/* v5 — replace literal orbital rings with a wider generative particle field. */
+.hero-object {
+  overflow: hidden;
+}
+.orb-wrap {
+  min-height: 520px;
+  overflow: visible;
+}
+.orb {
+  width: min(92%, 500px);
+  max-width: 500px;
+}
+
+/* Retire the old drawn orbital planes. */
+.orb-wrap .orbit,
+.hero-object::after {
+  display: none !important;
+}
+
+/* Soft, non-literal energy traces around the object. */
+.orb-wrap::before,
+.orb-wrap::after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  pointer-events:none;
+  border:0;
+  border-radius:50%;
+  transform-origin:center;
+}
+.orb-wrap::before {
+  z-index:1;
+  width:min(92%, 520px);
+  aspect-ratio:1.45 / 1;
+  transform:translate(-50%,-50%) rotate(-16deg);
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(150,220,255,.08) 62%, transparent 70%),
+    conic-gradient(from 20deg, transparent 0 13%, rgba(135,244,255,.20) 17%, transparent 22% 47%, rgba(222,141,255,.17) 52%, transparent 58% 81%, rgba(255,196,126,.13) 85%, transparent 90%);
+  filter:blur(7px);
+  opacity:.75;
+  animation:fieldDriftA 13s ease-in-out infinite alternate;
+}
+.orb-wrap::after {
+  z-index:3;
+  width:min(84%, 470px);
+  aspect-ratio:1.7 / 1;
+  transform:translate(-50%,-50%) rotate(24deg);
+  background:conic-gradient(from 190deg, transparent 0 28%, rgba(255,255,255,.13) 33%, transparent 38% 66%, rgba(166,127,255,.16) 71%, transparent 77%);
+  filter:blur(10px);
+  opacity:.55;
+  animation:fieldDriftB 17s ease-in-out infinite alternate;
+}
+@keyframes fieldDriftA {
+  to { transform:translate(-50%,-50%) rotate(-8deg) scale(1.035); opacity:.92; }
+}
+@keyframes fieldDriftB {
+  to { transform:translate(-50%,-50%) rotate(31deg) scale(.97); opacity:.7; }
+}
+@media (max-width:620px) {
+  .orb-wrap { min-height:410px; }
+  .orb { width:min(100%, 390px); }
+  .orb-wrap::before { width:min(104%,430px); }
+  .orb-wrap::after { width:min(96%,400px); }
+}
