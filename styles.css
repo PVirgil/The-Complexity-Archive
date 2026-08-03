@@ -466,7 +466,7 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
 }
 
 /* Tablet: prevent machine domain selects from being vertically crushed. */
-@media (min-width: 621px) and (max-width: 1024px) {
+@media (min-width: 621px) and (max-width: 1300px) {
   .machine-controls select {
     min-height: 50px;
     height: 50px;
