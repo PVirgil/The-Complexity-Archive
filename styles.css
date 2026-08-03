@@ -465,8 +465,194 @@ dialog::backdrop { background:rgba(0,0,0,.8); backdrop-filter:blur(12px); }
   padding-bottom: 4px;
 }
 
+/* ==========================================
+   HERO ORBIT SYSTEM
+   ========================================== */
+
+.orb-wrap {
+  position: relative;
+  isolation: isolate;
+}
+
+/*
+The sphere occupies layer 2.
+
+Every orbit gets:
+1 = back half
+3 = front half
+*/
+
+.orb {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* ------------------------------------------
+   ORBIT PLANES
+   ------------------------------------------ */
+
+.orbit-plane {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  transform-style: preserve-3d;
+}
+
+
+/*
+Both halves are IDENTICAL ellipses.
+
+The only difference is which half is visible.
+*/
+
+.orbit {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 370px;
+  height: 370px;
+
+  border: 1px solid rgba(255, 255, 255, 0.19);
+  border-radius: 50%;
+
+  transform-origin: center center;
+
+  pointer-events: none;
+}
+
+
+/* BACK OF ORBIT */
+
+.orbit-back {
+  z-index: 1;
+
+  clip-path: inset(0 0 50% 0);
+}
+
+
+/* FRONT OF ORBIT */
+
+.orbit-front {
+  z-index: 3;
+
+  clip-path: inset(50% 0 0 0);
+}
+
+
+/* ==========================================
+   ORBIT A
+   ========================================== */
+
+.orbit-plane-a {
+  animation:
+    orbit-a-spin 11s linear infinite;
+}
+
+.orbit-plane-a .orbit {
+  transform:
+    translate(-50%, -50%)
+    rotateX(72deg)
+    rotateZ(14deg);
+}
+
+
+/* ==========================================
+   ORBIT B
+   ========================================== */
+
+.orbit-plane-b {
+  animation:
+    orbit-b-spin 16s linear infinite;
+}
+
+.orbit-plane-b .orbit {
+  transform:
+    translate(-50%, -50%)
+    rotateY(67deg)
+    rotateZ(35deg);
+}
+
+
+/* ==========================================
+   ORBIT C
+   ========================================== */
+
+.orbit-plane-c {
+  animation:
+    orbit-c-spin 23s linear infinite reverse;
+}
+
+.orbit-plane-c .orbit {
+  width: 440px;
+  height: 440px;
+
+  opacity: 0.5;
+
+  transform:
+    translate(-50%, -50%)
+    rotateX(58deg)
+    rotateY(35deg);
+}
+
+
+/* ==========================================
+   SEAMLESS ROTATION
+   ========================================== */
+
+/*
+The start and end transforms are exactly
+one full revolution apart.
+
+That means frame 0 and frame 360 are visually
+identical, preventing the orbit from snapping
+back when the animation repeats.
+*/
+
+@keyframes orbit-a-spin {
+
+  from {
+    transform: rotateZ(0deg);
+  }
+
+  to {
+    transform: rotateZ(360deg);
+  }
+
+}
+
+
+@keyframes orbit-b-spin {
+
+  from {
+    transform: rotateZ(0deg);
+  }
+
+  to {
+    transform: rotateZ(360deg);
+  }
+
+}
+
+
+@keyframes orbit-c-spin {
+
+  from {
+    transform: rotateZ(0deg);
+  }
+
+  to {
+    transform: rotateZ(360deg);
+  }
+
+}
+
 /* Tablet: prevent machine domain selects from being vertically crushed. */
-@media (min-width: 621px) and (max-width: 1024px) {
+@media (min-width: 621px) and (max-width: 1300px) {
   .machine-controls select {
     min-height: 50px;
     height: 50px;
